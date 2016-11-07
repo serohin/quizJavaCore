@@ -66,7 +66,13 @@
 
       </div>
     </div>
-    <footer class="footer"><div class="footer-bg"></div></footer>
+    <footer class="footer">
+      <div class="footer-bg">
+        <div class = "row">
+          <p class="lineFooter">Учебное java приложение: Серегин О.В.</p>
+        </div>
+      </div>
+    </footer>
   </div>
 </div>
 </body>

@@ -370,6 +370,16 @@ hr{
 .rightButton:hover{
     background:#e28853;
 }
+.lineFooter{
+    padding-top: 1.2rem;
+    font-size: 1.2rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 40%;
+    text-align: center;
+}
 .buttonInQuizRezult:hover{
     background-image: linear-gradient(to bottom, #e49c89 0%, #d24a2f 100%);
 }
