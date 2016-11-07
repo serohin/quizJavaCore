@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="QuizDB" uuid="a305de3f-8932-454b-a9a8-fb8a3520bd6b">
+    <database-info product="MySQL" version="5.7.16-0ubuntu0.16.04.1" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.35 ( Revision: 5fb9c5849535c13917c2cf9baaece6ef9693ef27 )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact"/>
+    <schema name="" catalog="QuizDB"/>
+    <table name="answer" schema="" catalog="QuizDB" type="TABLE">
+      <column name="idAnswer" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="answer" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="correct" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6"/>
+      <column name="questionId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="idAnswer"/>
+      <foreign-key name="questionId" columns="questionId" ref-table="question" ref-schema="" ref-catalog="QuizDB" ref-columns="questionId" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="questionId_idx" unique="false" columns="questionId"/>
+    </table>
+    <table name="question" schema="" catalog="QuizDB" type="TABLE">
+      <column name="questionId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="caption" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="question" sqlType="VARCHAR" precision="650" scale="0" nullable="false" jdbcType="12"/>
+      <column name="quizId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="questionId"/>
+      <foreign-key name="quizId" columns="quizId" ref-table="quiz" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="questionId" table="answer" schema="" catalog="QuizDB" columns="questionId"/>
+      <index name="quizId_idx" unique="false" columns="quizId"/>
+    </table>
+    <table name="quiz" schema="" catalog="QuizDB" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="caption" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="themeId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="themeId" columns="themeId" ref-table="theme" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="quizId" table="question" schema="" catalog="QuizDB" columns="quizId"/>
+      <exported-key name="quiz_Id" table="resultquiz" schema="" catalog="QuizDB" columns="quiz_Id"/>
+      <index name="themeId_idx" unique="false" columns="themeId"/>
+    </table>
+    <table name="resultquiz" schema="" catalog="QuizDB" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="user_id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="section_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="theme_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="quiz_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="correctAnswer" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6"/>
+      <column name="quizLength" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="quiz_Id" columns="quiz_Id" ref-table="quiz" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="section_Id" columns="section_Id" ref-table="section" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="theme_Id" columns="theme_Id" ref-table="theme" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_id" columns="user_id" ref-table="user" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="quiz_Id_idx" unique="false" columns="quiz_Id"/>
+      <index name="section_Id_idx" unique="false" columns="section_Id"/>
+      <index name="theme_Id_idx" unique="false" columns="theme_Id"/>
+      <index name="user_id_idx" unique="false" columns="user_id"/>
+    </table>
+    <table name="section" schema="" catalog="QuizDB" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="caption" sqlType="VARCHAR" precision="64" scale="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="section_Id" table="resultquiz" schema="" catalog="QuizDB" columns="section_Id"/>
+      <exported-key name="sectionId" table="theme" schema="" catalog="QuizDB" columns="sectionId"/>
+    </table>
+    <table name="theme" schema="" catalog="QuizDB" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="caption" sqlType="VARCHAR" precision="128" scale="0" nullable="false" jdbcType="12"/>
+      <column name="sectionId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="sectionId" columns="sectionId" ref-table="section" ref-schema="" ref-catalog="QuizDB" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="themeId" table="quiz" schema="" catalog="QuizDB" columns="themeId"/>
+      <exported-key name="theme_Id" table="resultquiz" schema="" catalog="QuizDB" columns="theme_Id"/>
+      <index name="sectionId_idx" unique="false" columns="sectionId"/>
+    </table>
+    <table name="user" schema="" catalog="QuizDB" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="username" sqlType="VARCHAR" precision="45" scale="0" nullable="true" jdbcType="12"/>
+      <column name="password" sqlType="VARCHAR" precision="100" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="user_id" table="resultquiz" schema="" catalog="QuizDB" columns="user_id"/>
+    </table>
+  </data-source>
+</component>

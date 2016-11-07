@@ -1,0 +1,372 @@
+/* reset */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, font, img, ins, kbd, q, s, samp, small, strike, sub, sup, tt, var, dd, dl, dt, li, ol, ul, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    border: 0 none;
+    font-size: 100%;
+    font-style: inherit;
+    font-weight: inherit;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    vertical-align: baseline;
+}
+/* css begin */
+html, body,.inner-wrap, { height:100%; }
+body {
+    background: white;
+    color: #6a6a6a;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1.6;
+    position: relative;
+    cursor: default;
+    font-size: 14px;
+
+}
+.inner-wrap{
+    position: relative;
+    width: 100%;
+    height:100%;
+}
+.indexHeader {
+    background: #005494 url(/IMAGES/header-bg.png) repeat-x 0 0;
+    border-top: 5px solid #272a2c;
+    margin-bottom: 2.14286rem;
+    border-bottom: 6px solid rgba(0, 0, 0, 0.3);
+    min-height: 475px;
+}
+.row {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    max-width: 1230px;
+    overflow: auto;
+}
+
+.leftColumnInHeader{
+    float: left;
+    width: 40%;
+    padding-bottom: 1rem;
+    padding-top: 0.7rem;
+}
+.loginForm{
+    float: right;
+    width: 40%;
+    padding-top: 1rem;
+}
+input[type="text"],input[type="password"]{
+    -webkit-appearance: none;
+    background-color: white;
+    font-family: inherit;
+    border: 1px solid #cccccc;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-size: 1rem;
+    margin: 0 0 0.3rem 0;
+    padding: 0.5rem;
+    height: 1.65rem;
+    width: 100%;
+}
+
+.submitButton{
+    background: #e27653;
+    font-family: 'Droid Serif', serif;
+    font-size: 1.1rem;
+    color: #ffffff;
+    line-height: normal;
+    cursor: pointer;
+    border: 1px solid #171819;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    padding: 0.3rem 1.1rem 0.35rem;
+    margin-top: 0.2rem;
+}
+.submitButton:hover{
+    background:#e28853;
+}
+label {
+    font-size: 0.82rem;
+    color: #fff;
+
+    display: block;
+    font-weight: normal;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+.registerUserDiv label{
+    font-size: 1rem;
+    color: #4d4d4d;
+}
+.indicates, .usernameInfo {
+    color: #ff0000;
+}
+.innerLoginForm {
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 220px;
+}
+.topContent{
+    margin-top: -335px;
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    text-align: center;
+    padding: 2.14286rem 0;
+    color: #fff;
+ }
+.widget{
+    padding: 0 10px;
+    margin: 2.2em 0;
+}
+.widget h1{
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.contentWrap{
+    background: #fff;
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    background-clip: padding-box;
+    border-radius: 8px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.8) inset;
+    margin-bottom: 2.14286rem;
+    min-height: 345px;
+    padding: 1.8rem;
+    color: #471026;
+    font-size: 1.25rem;
+}
+.leftColumnInHeader .submitButton {
+    background: #4DC46F;
+    padding: 0.3rem 1.1rem 0.5rem;
+}
+.leftColumnInHeader .submitButton:hover{
+    background: #73c68b;
+}
+.leftColumnInHeader p{
+    padding-top: 1.4rem;
+    color: white;
+    font-weight: bold;
+    font-size: 1.6rem;
+    padding-bottom: 1rem;
+}
+.indicates + span{
+    color: #2B8DDD;
+}
+.innerLeftColumnInHeader{
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 220px;
+}
+.innerLogoutInHeader{
+    margin-bottom: 0;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 300px;
+    color: white;
+    font-size: 1.2rem;
+    padding-top: 1.4rem;
+    text-align: center;
+}
+.innerLogoutInHeader a{
+    color: #419add;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.innerLogoutInHeader a:hover {
+    color: #fff;
+}
+.messageError{
+    width: 100%;
+    font-size: 12px;
+    color: red;
+    line-height: normal;
+    float: none;
+    clear: both;
+    display: inline-block;
+}
+.header{
+    background: #005494 url(/IMAGES/header-bg.png) repeat-x 0 0;
+    border-top: 5px solid #272a2c;
+    margin-bottom: 2.14286rem;
+    border-bottom: 6px solid rgba(0, 0, 0, 0.3);
+}
+.addPadding{
+    padding: 2rem 0rem!important;
+}
+.footer {
+    clear: both;
+    margin-top: 3.5em;
+    background: rgba(0, 0, 0, 0.06);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    min-height: 130px;
+    background: rgba(0, 0, 0, 0.06)
+}
+.footer .footer-bg:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: "";
+    width: 100%;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+.footer .footer-bg {
+    position: relative;
+    padding: 0.85714rem 0 2.85714rem;
+}
+.textField{
+    -webkit-appearance: none;
+    background-color: white;
+    font-family: inherit;
+    border: 1px solid #cccccc;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-size: 1rem;
+    margin: 0 0 1.14286rem 0;
+    padding: 0.57143rem;
+    height: 2.64286rem;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    transition: box-shadow 0.45s, border-color 0.45s ease-in-out;
+}
+.innerWrapContent{
+    padding: 1rem;
+}
+.registerUserForm{
+    max-width: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.linkInregisterForm{
+    float: right;
+}
+a {
+    color: #005494;
+    text-decoration: none;
+    line-height: inherit;
+}
+a:hover{
+    color: #471026;
+}
+
+.insideContent{
+    /*max-width: 350px;
+    padding-left: 400px;*/
+    font-size: 1.2rem;
+}
+.insideContent h2{
+    text-align: center;
+}
+.insideContent ul{
+    list-style-position: inside;
+    padding-top: 0.2rem;
+}
+.insideContent b{
+    color: #471026;
+}
+.insideContent h3{
+    padding-top: 0.5rem;
+}
+
+.button {
+    display: inline-block;
+    text-decoration: none;
+    font-family: 'Droid Serif', serif;
+    font-size: 1.1rem;
+    color: #ffffff;
+    line-height: normal;
+    cursor: pointer;
+    border: 1px solid #171819;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    font-weight: bold;
+    padding: 0.5rem 1.1rem 0.54286rem;
+    margin-top: 1rem;
+    background: #4DC46F;
+}
+
+.button:hover {
+    background: #6cc987;
+    color: #ffffff;
+}
+.listInsideContent{
+    max-width: 600px;
+    padding-left: 10rem;
+}
+.delMargin{
+    margin: 0rem!important;
+}
+.innerWrapContent pre{
+    padding: 1.2rem;
+    background-color: whitesmoke;
+    color: #471026;
+}
+.innerWrapContent form{
+    font-size: 1rem;
+    padding-left: 1rem;
+    color:#333333;
+}
+hr{
+    width: 100%;
+    color: black;
+}
+
+.buttonQuestionForm{
+    padding: 0.51429rem 2.42857rem 0.44286rem;
+    background: #4DC46F;
+
+}
+/*.buttonQuestionForm:hover{
+    background-image: linear-gradient(to bottom, #e28853 0%, rgba(226, 118, 83, 0.85) 100%);
+}*/
+.quizResultContainer h2{
+    font-size: 1.5rem;
+}
+.quizResultContainer {
+    font-size: 1rem;
+}
+.innerWrapContent form h2{
+    font-size: 1.25rem;
+    max-width: 50%;
+    float: left;
+}
+.buttonInQuizRezult{
+    margin: 0rem 0rem 0.5rem 20rem;
+    background-image: linear-gradient(to bottom, #ff5900 0%, #cc3a00 100%);
+    border: 1px solid #d85820;
+    padding: 0.4rem 1.7rem 0.44286rem;
+}
+
+.buttonInQuizRezult:hover{
+    background-image: linear-gradient(to bottom, #e49c89 0%, #d24a2f 100%);
+}
+
+
+
+
+
+
+

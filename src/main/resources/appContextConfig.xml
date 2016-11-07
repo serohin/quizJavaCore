@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+       <bean name="sectionDaoImpl" class="com.kamazz.quiz.dao.impl.SectionDaoImpl" scope = "prototype"/>
+       <bean name="themeDaoImpl" class="com.kamazz.quiz.dao.impl.ThemeDaoImpl" scope="prototype"/>
+       <bean name="quizDaoImpl" class="com.kamazz.quiz.dao.impl.QuizDaoImpl" scope="prototype"/>
+       <bean name="questionDaoImpl" class="com.kamazz.quiz.dao.impl.QuestionDaoImpl" scope="prototype"/>
+       <bean name="userDaoImpl" class="com.kamazz.quiz.dao.impl.UserDaoImpl" scope="prototype"/>
+
+       <!--VALIDATOR-->
+       <bean name="userValidatorImpl" class="com.kamazz.quiz.validator.UserValidatorImpl" scope="prototype"/>
+
+       <!--INIT_CTX_DATASOURCE-->
+       <bean name="jndiConnection" class="com.kamazz.quiz.dao.connection.JNDIConnection">
+              <property name="datasourceContext" value="java:comp/env"/>
+              <property name="dataBaseName" value="jdbc/QuizDB"/>
+       </bean>
+
+
+</beans>
