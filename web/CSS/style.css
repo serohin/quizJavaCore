@@ -359,10 +359,13 @@ hr{
     border: 1px solid #d85820;
     padding: 0.4rem 1.7rem 0.44286rem;
 }
-
+.delPadding{
+    padding: 0rem!important;
+}
 .buttonInQuizRezult:hover{
     background-image: linear-gradient(to bottom, #e49c89 0%, #d24a2f 100%);
 }
+
 
 
 

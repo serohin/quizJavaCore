@@ -12,7 +12,7 @@
 
         <header class = "header delMargin">
             <div class = "row">
-                <div class="leftColumnInHeader">
+                <div class="leftColumnInHeader delPadding">
                     <div class="innerLeftColumnInHeader">
                         <p class ="addPadding">JAVA CORE QUIZ</p>
                     </div>
