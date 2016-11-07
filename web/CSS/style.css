@@ -314,7 +314,7 @@ a:hover{
 }
 .listInsideContent{
     max-width: 600px;
-    padding-left: 10rem;
+    padding-left: 12rem;
 }
 .delMargin{
     margin: 0rem!important;
@@ -382,6 +382,10 @@ hr{
 }
 .buttonInQuizRezult:hover{
     background-image: linear-gradient(to bottom, #e49c89 0%, #d24a2f 100%);
+}
+.registerFormButton{
+    padding: 0.5rem 1.1rem 0.54286rem;
+    margin-top: .5rem;
 }
 
 

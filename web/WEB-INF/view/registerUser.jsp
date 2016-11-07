@@ -59,7 +59,7 @@
             </c:choose>
           </div>
           <div >
-            <input class="submitButton" type="submit" value="зарегистрироваться"  name="submit" />
+            <input class="submitButton registerFormButton" type="submit" value="зарегистрироваться"  name="submit" />
           </div>
           <p class="linkInregisterForm"><a href="./"><b>« залогиниться</b></a></p>
         </form>
