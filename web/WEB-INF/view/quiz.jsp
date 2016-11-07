@@ -54,6 +54,7 @@
             </ul>
             <p>
               <a class="button" href="./theme.do?sectionId=${sessionScope.sectionId}">« вернуться в темы</a>
+              <a class="button rightButton" href="./section.do"> выйти в разделы </a>
             </p>
           </div>
         </div>

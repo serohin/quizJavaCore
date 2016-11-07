@@ -29,7 +29,7 @@
                 <div class="insideContent">
 
                         <div class="listInsideContent row">
-                            <h3>Чтобы пройти квиз выберите раздел :</h3>
+                            <h3>Выберите раздел Java Core :</h3>
                             <ul>
                                 <c:forEach var="section" items="${sectionList}" varStatus="loop">
                                     <li><a href="./theme.do?sectionId=${section.id}">${section.caption}</a></li>

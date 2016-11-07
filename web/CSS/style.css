@@ -362,6 +362,14 @@ hr{
 .delPadding{
     padding: 0rem!important;
 }
+.rightButton{
+    background: #e27653;
+    min-width: 155px;
+    text-align: center;
+}
+.rightButton:hover{
+    background:#e28853;
+}
 .buttonInQuizRezult:hover{
     background-image: linear-gradient(to bottom, #e49c89 0%, #d24a2f 100%);
 }
