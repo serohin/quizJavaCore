@@ -80,10 +80,14 @@ public class LoginFilter extends DependencyInjectionFilter {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-            if (null != newUser && newUser.getPassword().equals(password)) {
-                session.setAttribute(PARAM_USER, newUser.getUsername());
-                resp.sendRedirect(REDIRECT_OK_URL);
-                return;
+            if (null != newUser){
+                if(newUser.getPassword().equals(password)) {
+                    session.setAttribute(PARAM_USER, newUser.getUsername());
+                    resp.sendRedirect(REDIRECT_OK_URL);
+                    return;
+                }else{
+                    errorMap.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
+                }
             }
         }
 
