@@ -43,6 +43,14 @@ public class LoginFilter extends DependencyInjectionFilter {
 
     @Override
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
+
+        HttpSession session = req.getSession(false);
+        String userInSession = (String) session.getAttribute(PARAM_USER);
+        if(null != userInSession){
+            req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
+            return;
+        }
+
         req.setCharacterEncoding("UTF-8");
         String userName = null;
         String password = null;
@@ -51,21 +59,19 @@ public class LoginFilter extends DependencyInjectionFilter {
             password = req.getParameter(PARAM_PASSWORD).trim();
         }
 
-        HttpSession session = req.getSession(false);
-        String userInSession = (String) session.getAttribute(PARAM_USER);
+
 
         final User user = new User(userName, password);
         Map<String, String> errorMap = userValidator.validate(user);
 
         if (errorMap.isEmpty() & null == userInSession) {
             User newUser = null;
-
             try (Connection conn = jndiConnection.getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
                 } catch (NoSuchEntityException e) {
-                        /*NOP*/
+                    errorMap.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 }
@@ -73,20 +79,15 @@ public class LoginFilter extends DependencyInjectionFilter {
             } catch (SQLException e) {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
-
             }
-
-            if (null == newUser) {
-                errorMap.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пингвина");
-            } else if (newUser.getPassword().equals(password)) {
+            if (null != newUser && newUser.getPassword().equals(password)) {
                 session.setAttribute(PARAM_USER, newUser.getUsername());
                 resp.sendRedirect(REDIRECT_OK_URL);
                 return;
             }
         }
 
-
-        if (!errorMap.isEmpty() || null != userInSession) {
+        if (!errorMap.isEmpty()) {
             req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMap);
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
         }
