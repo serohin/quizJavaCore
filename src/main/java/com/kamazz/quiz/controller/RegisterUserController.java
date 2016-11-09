@@ -2,7 +2,7 @@ package com.kamazz.quiz.controller;
 
 import com.kamazz.injection.DependencyInjectionServlet;
 import com.kamazz.injection.Inject;
-import com.kamazz.quiz.dao.connection.JNDIConnection;
+import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
@@ -48,8 +48,8 @@ public class RegisterUserController extends DependencyInjectionServlet {
     @Inject("userValidatorImpl")
     UserValidator userValidator;
 
-    @Inject("jndiConnection")
-    JNDIConnection jndiConnection;
+    @Inject("jndiDatasource")
+    JNDIDatasource jndiDatasource;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -72,7 +72,7 @@ public class RegisterUserController extends DependencyInjectionServlet {
         }
 
         if (errorMap.isEmpty()) {
-            try (Connection conn = jndiConnection.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 User tmpUser = null;
                 try {

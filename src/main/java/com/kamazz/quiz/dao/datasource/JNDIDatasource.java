@@ -1,16 +1,15 @@
-package com.kamazz.quiz.dao.connection;
+package com.kamazz.quiz.dao.datasource;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
-public class JNDIConnection {
+public class JNDIDatasource {
     private String datasourceContext;
     private String dataBaseName;
+    private DataSource dataSource;
 
     public String getDatasourceContext() {
         return datasourceContext;
@@ -28,7 +27,24 @@ public class JNDIConnection {
         this.dataBaseName = dataBaseName;
     }
 
-    private DataSource getDataSource(){
+    public JNDIDatasource() {
+        try {
+            InitialContext initCtx = new InitialContext();
+            Context envCont = (Context) initCtx.lookup(getDatasourceContext());
+            this.dataSource = (DataSource) envCont.lookup(getDataBaseName());
+        } catch (NamingException  e) {
+            //log("Cannot get connection" +e )
+        }
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    /*private DataSource getJndiDataSource(){
         DataSource ds = null;
         try {
             InitialContext initCtx = new InitialContext();
@@ -45,12 +61,9 @@ public class JNDIConnection {
         DataSource ds = getDataSource();
         conn = ds.getConnection();
         return conn;
-    }
+    }*/
 
-    public Connection getConnection() throws SQLException {
-        return getJNDIConnection();
 
-    }
 
 
 }

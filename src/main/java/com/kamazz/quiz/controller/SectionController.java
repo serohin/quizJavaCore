@@ -2,7 +2,7 @@ package com.kamazz.quiz.controller;
 
 import com.kamazz.injection.DependencyInjectionServlet;
 import com.kamazz.injection.Inject;
-import com.kamazz.quiz.dao.connection.JNDIConnection;
+import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.interfaces.SectionDao;
 import com.kamazz.quiz.entity.Section;
@@ -24,8 +24,8 @@ public class SectionController extends DependencyInjectionServlet {
     public static final String PAGE_OK = "WEB-INF/view/section.jsp";
 
 
-    @Inject("jndiConnection")
-    JNDIConnection jndiConnection;
+    @Inject("jndiDatasource")
+    JNDIDatasource jndiDatasource;
 
     @Inject("sectionDaoImpl")
     private SectionDao sectionDao;
@@ -38,7 +38,7 @@ public class SectionController extends DependencyInjectionServlet {
         if (sectionList != null) {
             req.getRequestDispatcher(PAGE_OK).forward(req, resp);
         } else {
-            try (Connection conn = jndiConnection.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
 
                 List<Section> allSectionList = null;

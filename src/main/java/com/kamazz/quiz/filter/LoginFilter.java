@@ -3,7 +3,7 @@ package com.kamazz.quiz.filter;
 
 import com.kamazz.injection.DependencyInjectionFilter;
 import com.kamazz.injection.Inject;
-import com.kamazz.quiz.dao.connection.JNDIConnection;
+import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
@@ -38,8 +38,8 @@ public class LoginFilter extends DependencyInjectionFilter {
     @Inject("userValidatorImpl")
     UserValidator userValidator;
 
-    @Inject("jndiConnection")
-    JNDIConnection jndiConnection;
+    @Inject("jndiDatasource")
+    JNDIDatasource jndiDatasource;
 
     @Override
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
@@ -66,7 +66,7 @@ public class LoginFilter extends DependencyInjectionFilter {
 
         if (errorMap.isEmpty() & null == userInSession) {
             User newUser = null;
-            try (Connection conn = jndiConnection.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
@@ -79,6 +79,8 @@ public class LoginFilter extends DependencyInjectionFilter {
             } catch (SQLException e) {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
+            }finally{
+                System.out.println();
             }
             if (null != newUser){
                 if(newUser.getPassword().equals(password)) {

@@ -3,7 +3,7 @@ package com.kamazz.quiz.controller;
 
 import com.kamazz.injection.DependencyInjectionServlet;
 import com.kamazz.injection.Inject;
-import com.kamazz.quiz.dao.connection.JNDIConnection;
+import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.QuestionDao;
@@ -37,8 +37,8 @@ public class QuestionController extends DependencyInjectionServlet {
 
     @Inject("questionDaoImpl")
     QuestionDao questionDao;
-    @Inject("jndiConnection")
-    JNDIConnection jndiConnection;
+    @Inject("jndiDatasource")
+    JNDIDatasource jndiDatasource;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -59,7 +59,7 @@ public class QuestionController extends DependencyInjectionServlet {
             }
             int id = Integer.valueOf(strId);
 
-            try (Connection conn = jndiConnection.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 List<Question> questionList = null;
                 try {
