@@ -14,29 +14,29 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserByName(String userName, Connection conn) throws NoSuchEntityException, DaoSystemException {
-        try (PreparedStatement stmt = conn.prepareStatement(SELECT_USER_BY_USERNAME)) {
-            stmt.setString(1, userName);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    throw new NoSuchEntityException("No User for userName='" + userName + "'");
-                } else {
-                    int id = rs.getInt("id");
-                    String username = rs.getString("username");
-                    String password = rs.getString("password");
-                    if (rs.next()) {
-                        throw new DaoSystemException("DB contains more than 1 user in 'QuizDB.user' for userName='" + username + "'.");
-                    }
-                    return new User(id, username, password);
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT id,username,password FROM user WHERE username = '" + userName + "'")) {
+            if (!rs.next()) {
+                throw new NoSuchEntityException("No User for userName='" + userName + "'");
+            } else {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                if (rs.next()) {
+                    throw new DaoSystemException("DB contains more than 1 user in 'QuizDB.user' for userName='" + username + "'.");
                 }
+                return new User(id, username, password);
             }
         } catch (SQLException e) {
             throw new DaoSystemException("Some JDBC error for executeQuery SQL='" + SELECT_USER_BY_USERNAME + "'", e);
+        }finally {
+            System.out.println();
         }
     }
 
     @Override
     public User insertNewUser(User user, Connection conn) throws DaoSystemException {
-        try (PreparedStatement stmt = conn.prepareStatement(INSERT_NEW_USER,Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conn.prepareStatement(INSERT_NEW_USER, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getPassword());
             stmt.executeUpdate();

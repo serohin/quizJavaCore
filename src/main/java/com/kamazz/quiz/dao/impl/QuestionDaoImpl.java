@@ -20,23 +20,22 @@ public class QuestionDaoImpl implements QuestionDao {
 
     @Override
     public List<Question> getQuestionListByQuizId(int quizId, Connection conn) throws DaoSystemException, NoSuchEntityException {
-        try (Statement stmt = conn.createStatement()){
-            List<Question> questionList = new ArrayList<>();
-            try(ResultSet rs = stmt.executeQuery("SELECT questionId,caption,question,quizId FROM question WHERE quizId = '" + quizId + "'")) {
-                if (!rs.next()) {
-                    throw new NoSuchEntityException("No Theme for id='" + quizId + "'");
-                } else {
-                    do {
-                        int questionId = rs.getInt("questionId");
-                        String caption = rs.getString("caption");
-                        String question = rs.getString("question");
-                        int idQuiz = rs.getInt("quizId");
-                        List<Answer> answerList = answerDao.getAnswerListbyQuestionId(questionId, conn);
-                        questionList.add(new Question(questionId, caption, question, idQuiz, answerList, new Answer()));
-                    } while (rs.next());
-                }
-                return questionList;
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT questionId,caption,question,quizId FROM question WHERE quizId = '" + quizId + "'")) {
+           List<Question> questionList = new ArrayList<>();
+            if (!rs.next()) {
+                throw new NoSuchEntityException("No Theme for id='" + quizId + "'");
+            } else {
+                do {
+                    int questionId = rs.getInt("questionId");
+                    String caption = rs.getString("caption");
+                    String question = rs.getString("question");
+                    int idQuiz = rs.getInt("quizId");
+                    List<Answer> answerList = answerDao.getAnswerListbyQuestionId(questionId, conn);
+                    questionList.add(new Question(questionId, caption, question, idQuiz, answerList, new Answer()));
+                } while (rs.next());
             }
+            return questionList;
         } catch (SQLException e) {
             throw new DaoSystemException("Some JDBC error.", e);
         }
