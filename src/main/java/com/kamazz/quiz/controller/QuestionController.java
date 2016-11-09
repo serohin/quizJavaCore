@@ -59,7 +59,7 @@ public class QuestionController extends DependencyInjectionServlet {
             }
             int id = Integer.valueOf(strId);
 
-            try (Connection conn = jndiDatasource.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 List<Question> questionList = null;
                 try {

@@ -72,7 +72,7 @@ public class RegisterUserController extends DependencyInjectionServlet {
         }
 
         if (errorMap.isEmpty()) {
-            try (Connection conn = jndiDatasource.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 User tmpUser = null;
                 try {

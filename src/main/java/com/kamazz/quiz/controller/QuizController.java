@@ -56,7 +56,7 @@ public class QuizController extends DependencyInjectionServlet {
             HttpSession session = req.getSession(true);
             session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
 
-            try (Connection conn = jndiDatasource.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 List<Quiz> quizList = null;
                 try {

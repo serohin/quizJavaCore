@@ -38,7 +38,7 @@ public class SectionController extends DependencyInjectionServlet {
         if (sectionList != null) {
             req.getRequestDispatcher(PAGE_OK).forward(req, resp);
         } else {
-            try (Connection conn = jndiDatasource.getConnection()) {
+            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
 
                 List<Section> allSectionList = null;
