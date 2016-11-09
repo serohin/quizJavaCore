@@ -4,12 +4,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 
 public class JNDIDatasource {
     private String datasourceContext;
     private String dataBaseName;
-    private DataSource dataSource;
 
     public String getDatasourceContext() {
         return datasourceContext;
@@ -27,31 +28,14 @@ public class JNDIDatasource {
         this.dataBaseName = dataBaseName;
     }
 
-    public JNDIDatasource() {
-        try {
-            InitialContext initCtx = new InitialContext();
-            Context envCont = (Context) initCtx.lookup(getDatasourceContext());
-            this.dataSource = (DataSource) envCont.lookup(getDataBaseName());
-        } catch (NamingException  e) {
-            //log("Cannot get connection" +e )
-        }
-    }
-
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-    /*private DataSource getJndiDataSource(){
+    private DataSource getDataSource(){
         DataSource ds = null;
         try {
             InitialContext initCtx = new InitialContext();
             Context envCont = (Context) initCtx.lookup(getDatasourceContext());
             ds = (DataSource) envCont.lookup(getDataBaseName());
         } catch (NamingException  e) {
-            //log("Cannot get connection" +e )
+            //log("Cannot get datasource" +e )
         }
         return ds;
     }
@@ -61,9 +45,12 @@ public class JNDIDatasource {
         DataSource ds = getDataSource();
         conn = ds.getConnection();
         return conn;
-    }*/
+    }
 
+    public Connection getConnection() throws SQLException {
+        return getJNDIConnection();
 
+    }
 
 
 }

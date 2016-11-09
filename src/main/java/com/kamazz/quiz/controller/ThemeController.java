@@ -73,7 +73,7 @@ public class ThemeController extends DependencyInjectionServlet {
         }else {
             final int id = idValueOff;
             session.setAttribute(PARAM_SECTION_ID,id);
-            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
+            try (Connection conn = jndiDatasource.getConnection()) {
                 conn.setAutoCommit(false);
                 List<Theme> themeList = null;
                 try {

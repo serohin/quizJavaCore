@@ -66,7 +66,7 @@ public class LoginFilter extends DependencyInjectionFilter {
 
         if (errorMap.isEmpty() & null == userInSession) {
             User newUser = null;
-            try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
+            try (Connection conn = jndiDatasource.getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
@@ -79,8 +79,6 @@ public class LoginFilter extends DependencyInjectionFilter {
             } catch (SQLException e) {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
-            }finally{
-                System.out.println();
             }
             if (null != newUser){
                 if(newUser.getPassword().equals(password)) {
