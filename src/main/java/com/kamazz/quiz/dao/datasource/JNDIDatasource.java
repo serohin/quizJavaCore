@@ -9,7 +9,8 @@ import javax.sql.DataSource;
 public class JNDIDatasource {
     private String datasourceContext;
     private String dataBaseName;
-    DataSource dataSource;
+    private DataSource dataSource;
+
 
     public String getDatasourceContext() {
         return datasourceContext;
@@ -27,7 +28,25 @@ public class JNDIDatasource {
         this.dataBaseName = dataBaseName;
     }
 
-    private DataSource getJNDIDataSource(){
+    public DataSource getDataSource() {
+        if(null == dataSource){
+            setDataSource();
+        }
+        return dataSource;
+    }
+
+    private void setDataSource() {
+        try {
+            InitialContext initCtx = new InitialContext();
+            Context envCont = (Context) initCtx.lookup(getDatasourceContext());
+            this.dataSource = (DataSource) envCont.lookup(getDataBaseName());
+        } catch (NamingException | NullPointerException  e) {
+            //log("Cannot get datasource" +e )
+        }
+    }
+
+
+    /*private DataSource getJNDIDataSource(){
         DataSource ds = null;
         try {
             InitialContext initCtx = new InitialContext();
@@ -39,17 +58,14 @@ public class JNDIDatasource {
         return ds;
     }
 
-   /* private Connection getJNDIConnection() throws SQLException {
+    private Connection getJNDIConnection() throws SQLException {
         Connection conn = null;
         DataSource ds = getDataSource();
         conn = ds.getConnection();
         return conn;
     }*/
 
-    public DataSource getDataSource(){
-        return getJNDIDataSource();
 
-    }
 
 
 }
