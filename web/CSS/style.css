@@ -422,6 +422,13 @@ ol{
     font-size: inherit!important;
 
 }
+.labelForInputRadio{
+    color: #000000;
+    font-size: inherit;
+    display: inline;
+    cursor: pointer;
+}
+
 
 
 
