@@ -49,7 +49,8 @@
                                                 <c:choose>
                                                     <c:when test="${answer.correct == '1'}">
                                                         </br><input type="checkbox" name="userAnswerId" value="" checked disabled>
-                                                            <c:out value="${answer.answer}"/><b style="color:green"> ✔ </b>ответ пользователя - правильный ответ
+                                                            <c:out value="${answer.answer}"/><b style="color:green"> ✔ </b>
+                                                                <span class="pointerCorrectAnswer">ответ пользователя - правильный ответ</span>
                                                     </c:when>
                                                     <c:otherwise>
                                                         </br><input type="checkbox" name="userAnswerId" value="" disabled>
@@ -72,7 +73,7 @@
                                                     <c:when test="${answer.correct == '1'}">
                                                         </br><input type="checkbox" name="userAnswerId" value="" disabled>
                                                         <c:out value="${answer.answer}"/><b style="color:green">
-                                                        ✓ </b> правильный ответ
+                                                        ✓ </b><span class="pointerCorrectAnswer"> правильный ответ</span>
                                                     </c:when>
 
                                                     <c:otherwise>
@@ -80,7 +81,7 @@
                                                             <c:when test="${answer.idAnswer == questionList.userAnswer.idAnswer }">
                                                                 </br><input type="checkbox" name="userAnswerId" value="" checked disabled>
                                                                 <c:out value="${answer.answer}"/><b style="color:red">
-                                                                ✘ </b> ответ пользователя
+                                                                ✘ </b><span class="pointerCorrectAnswer"> ответ пользователя</span>
                                                             </c:when>
                                                             <c:otherwise>
                                                                 </br><input type="checkbox" name="userAnswerId" value="" disabled>
