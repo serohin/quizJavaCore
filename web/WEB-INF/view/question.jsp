@@ -25,14 +25,15 @@
 
                 <form action="/question.do" method="post">
 
-                    <h2><b><c:out value="${quizIndex+1}"/></b>. Вопрос номер <b><c:out value="${quizIndex+1}"/></b> из <b><c:out value="${question.size()}"/></b>:</h2><a class="button buttonInQuizRezult" href="./endquiz.do">« выйти в квизы</a>
-                    <p><c:out value="${question[quizIndex].caption}"/></p>
-                    ${question[quizIndex].question}
+                    <h2><b><c:out value="${quizIndex+1}"/></b>. Вопрос номер <b><c:out value="${quizIndex+1}"/></b> из <b><c:out value="${question.size()}"/></b>:</h2>
+                    <a class="button buttonBackInQuestionForm" href="./endquiz.do">« выйти в квизы</a>
+                    <p>${question[quizIndex].caption}</p>
+                    <p>${question[quizIndex].question}</p>
 
                     <p><b>Выберите ответ:</b></br>
 
                         <c:forEach var="answer" items="${question[quizIndex].answerList}">
-                            <input  type="radio" name="userAnswerId" value="${answer.idAnswer}"/><c:out value="${answer.answer}"/></br>
+                            <input  type="radio" name="userAnswerId" value="${answer.idAnswer}"><c:out value="${answer.answer}"/></br>
                         </c:forEach>
 
                         <c:choose>

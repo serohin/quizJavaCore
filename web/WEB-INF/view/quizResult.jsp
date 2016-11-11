@@ -3,23 +3,23 @@
 <html>
 <head>
     <title></title>
-    <%@ include file="/WEB-INF/jspf/css.jspf"%>
+    <%@ include file="/WEB-INF/jspf/css.jspf" %>
 </head>
 <body>
 
-<div class = "inner-wrap">
+<div class="inner-wrap">
     <div id="container">
 
-        <header class = "header delMargin">
-            <div class = "row">
+        <header class="header delMargin">
+            <div class="row">
                 <div class="leftColumnInHeader">
                     <div class="innerLeftColumnInHeader">
-                        <p class ="addPadding">JAVA CORE QUIZ</p>
+                        <p class="addPadding">JAVA CORE QUIZ</p>
                     </div>
                 </div>
                 <div class="loginForm">
                     <div class="innerLogoutInHeader">
-                        <%@ include file="/WEB-INF/jspf/User.jspf"%>
+                        <%@ include file="/WEB-INF/jspf/User.jspf" %>
                     </div>
                 </div>
             </div>
@@ -29,44 +29,73 @@
             <div class="innerWrapContent">
                 <div class="quizResultContainer">
                     <a class="button delMargin" href="./endquiz.do">« вернуться в квизы</a>
-                    <h2>Вы ответили правильно на <b style="color:green"><c:out value="${sessionScope.countCorrectAnswer}"/></b> из <b style="color:tomato"><c:out
-                            value="${sessionScope.question.size()}"/></b>
-                        вопросов </h2>
-                    <ol type="1">
-                        <c:forEach var="questionList" items="${sessionScope.question}">
-                        <li>
-                            <c:out value="${questionList.caption}"/>
-                            <p>${questionList.question}</p></br>
-                            <b>Ответы:</b></br>
-                            <ul type="disc">
-                                <c:forEach var="answer" items="${questionList.answerList}">
-                                    <c:choose>
-                                        <c:when test="${answer.correct == '1'}">
-                                            <li><b style="background-color: chartreuse"> <c:out value="${answer.answer}"/></b> - правильный
-                                                ответ
-                                            </li>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <li><c:out value="${answer.answer}"/></li>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </ul>
 
-                            <p><b>Ответ пользователя :</b>
+                    <h2>Вы ответили правильно на <b style="color:green"><c:out
+                            value="${sessionScope.countCorrectAnswer}"/></b> из <b style="color:tomato"><c:out
+                            value="${sessionScope.question.size()}"/></b> вопросов: </h2>
+
+                    <ol>
+                        <c:forEach var="questionList" items="${sessionScope.question}">
+                            <li>
                                 <c:choose>
                                     <c:when test="${questionList.userAnswer.correct == '1'}">
-                                        <b style="background-color:chartreuse"> <c:out
-                                                value="${questionList.userAnswer.answer}"/></b> - верно
+                                        <div class="correctAnswer">
+                                            <p><span>✔</span>${questionList.caption}</p>
+
+                                            <p>${questionList.question}</p>
+                                            <b>Ответы:</b>
+
+                                            <c:forEach var="answer" items="${questionList.answerList}">
+                                                <c:choose>
+                                                    <c:when test="${answer.correct == '1'}">
+                                                        </br><input type="checkbox" name="userAnswerId" value="" checked disabled>
+                                                            <c:out value="${answer.answer}"/><b style="color:green"> ✔ </b>ответ пользователя - правильный ответ
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        </br><input type="checkbox" name="userAnswerId" value="" disabled>
+                                                        <c:out value="${answer.answer}"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </div>
                                     </c:when>
+
                                     <c:otherwise>
-                                        <b style="background-color:tomato"> <c:out value="${questionList.userAnswer.answer}"/></b> - неверно
+                                        <div class="inCorrectAnswer">
+                                            <p><span>✘</span> ${questionList.caption}</p>
+
+                                            <p>${questionList.question}</p>
+                                            <b>Ответы:</b>
+
+                                            <c:forEach var="answer" items="${questionList.answerList}">
+                                                <c:choose>
+                                                    <c:when test="${answer.correct == '1'}">
+                                                        </br><input type="checkbox" name="userAnswerId" value="" disabled>
+                                                        <c:out value="${answer.answer}"/><b style="color:green">
+                                                        ✓ </b> правильный ответ
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <c:choose>
+                                                            <c:when test="${answer.idAnswer == questionList.userAnswer.idAnswer }">
+                                                                </br><input type="checkbox" name="userAnswerId" value="" checked disabled>
+                                                                <c:out value="${answer.answer}"/><b style="color:red">
+                                                                ✘ </b> ответ пользователя
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                </br><input type="checkbox" name="userAnswerId" value="" disabled>
+                                                                <c:out value="${answer.answer}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
-                            </p>
-                            <hr>
-                            </c:forEach>
-                        </li>
+                                <hr>
+                            </li>
+                        </c:forEach>
                     </ol>
                 </div>
             </div>

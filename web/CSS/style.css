@@ -337,7 +337,13 @@ hr{
 .buttonQuestionForm{
     padding: 0.51429rem 2.42857rem 0.44286rem;
     background: #4DC46F;
-
+    margin-top: 0.5rem;
+}
+.buttonBackInQuestionForm{
+    margin: 0rem 0rem 0.1rem 20rem;
+    background-image: linear-gradient(to bottom, #ff5900 0%, #cc3a00 100%);
+    border: 1px solid #d85820;
+    padding: 0.4rem 1.7rem 0.44286rem;
 }
 /*.buttonQuestionForm:hover{
     background-image: linear-gradient(to bottom, #e28853 0%, rgba(226, 118, 83, 0.85) 100%);
@@ -348,16 +354,13 @@ hr{
 .quizResultContainer {
     font-size: 1rem;
 }
+.quizResultContainer ol{
+    list-style-position: inside;
+}
 .innerWrapContent form h2{
     font-size: 1.25rem;
     max-width: 50%;
     float: left;
-}
-.buttonInQuizRezult{
-    margin: 0rem 0rem 0.5rem 20rem;
-    background-image: linear-gradient(to bottom, #ff5900 0%, #cc3a00 100%);
-    border: 1px solid #d85820;
-    padding: 0.4rem 1.7rem 0.44286rem;
 }
 .delPadding{
     padding: 0rem!important;
@@ -386,6 +389,32 @@ hr{
 .registerFormButton{
     padding: 0.5rem 1.1rem 0.54286rem;
     margin-top: .5rem;
+}
+ol{
+ list-style-type: none;
+}
+.correctAnswer{
+    background-color: #dcffdc;
+    padding: 1.1rem;
+}
+.correctAnswer span{
+    color:green;
+    font-size: 30px;
+}
+.inCorrectAnswer span{
+    color:red;
+    font-size: 30px;
+
+}
+.inCorrectAnswer{
+    background-color: #ffedf0;
+    padding: 1.1rem;
+
+}
+.code{
+    color: #471026!important;
+    font-size: 16px!important;
+    font-family: monospace;
 }
 
 
