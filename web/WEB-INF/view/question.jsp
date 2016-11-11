@@ -33,7 +33,9 @@
                     <p><b>Выберите ответ:</b></br>
 
                         <c:forEach var="answer" items="${question[quizIndex].answerList}">
-                            <input  type="radio" name="userAnswerId" value="${answer.idAnswer}"><c:out value="${answer.answer}"/></br>
+                            <label class="labelForInputRadio">
+                                <input type="radio" name="userAnswerId" id="questionAnswer" value="${answer.idAnswer}"> <c:out value="${answer.answer}"/>
+                            </label></br>
                         </c:forEach>
 
                         <c:choose>
