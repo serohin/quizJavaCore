@@ -41,14 +41,18 @@ public class QuestionController extends DependencyInjectionServlet {
     JNDIDatasource jndiDatasource;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        //Достаем id выбранного квиза
-        String strId = req.getParameter(PARAM_QUIZ_ID);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if (strId == null) {
+        String method = req.getMethod();
+        if (method.equalsIgnoreCase("GET")) {
             req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-        } else {
+            return;
+        }
 
+        String strId = req.getParameter(PARAM_QUIZ_ID);
+        String userAnswerIdStr = req.getParameter(PARAM_USER_ANSWER_ID);
+
+        if (strId != null & userAnswerIdStr == null) {
             try {
                 Integer.valueOf(strId);
             } catch (NumberFormatException e) {
@@ -70,7 +74,7 @@ public class QuestionController extends DependencyInjectionServlet {
                     e.printStackTrace();
                     //logger.debug(e);
                     req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-                    ;
+
                 }
                 conn.commit();
                 if (null != questionList) {
@@ -84,56 +88,51 @@ public class QuestionController extends DependencyInjectionServlet {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-        }
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userAnswerIdStr = req.getParameter(PARAM_USER_ANSWER_ID);
-        if (userAnswerIdStr == null) {
-            req.setAttribute("errorInput", "выберите 1 из значений!");
-            req.getRequestDispatcher(PAGE_OK ).forward(req, resp);
-            return;
-        }
-        int userAnswerId = Integer.valueOf(userAnswerIdStr);
-        HttpSession session = req.getSession(true);
-        //тащим текущую позицию вопроса
-        int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
-        //тащим старый список вопросов
-        List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
-
-        for (int i = 0; i < oldlistQuestion.get(oldIndex).getAnswerList().size(); i++) {
-            if (oldlistQuestion.get(oldIndex).getAnswerList().get(i).getIdAnswer() == userAnswerId) {
-                Answer userAnswer = new Answer(oldlistQuestion.get(oldIndex).getAnswerList().get(i));
-                oldlistQuestion.get(oldIndex).setUserAnswer(userAnswer);
-            }
-        }
-
-        if (oldlistQuestion.get(oldIndex).getUserAnswer().getAnswer() == null) {
-            req.setAttribute("errorInput", "выберите 1 из значений!");
-            req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-            return;
-        }
-
-        session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(oldlistQuestion));
-        final int nextIndex = ++oldIndex;
-
-        if (nextIndex < oldlistQuestion.size()) {
-            session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, nextIndex);
-            req.getRequestDispatcher(PAGE_OK).forward(req, resp);
         } else {
-            int count = 0;
-            for (int i = 0; i < oldlistQuestion.size(); i++) {
-                if (oldlistQuestion.get(i).getUserAnswer().getCorrect() == (byte) 1) {
-                    count++;
+
+            if (userAnswerIdStr == null) {
+                req.setAttribute("errorInput", "выберите 1 из значений!");
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                return;
+            }
+            int userAnswerId = Integer.valueOf(userAnswerIdStr);
+            HttpSession session = req.getSession(true);
+            //тащим текущую позицию вопроса
+            int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
+            //тащим старый список вопросов
+            List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
+
+            for (int i = 0; i < oldlistQuestion.get(oldIndex).getAnswerList().size(); i++) {
+                if (oldlistQuestion.get(oldIndex).getAnswerList().get(i).getIdAnswer() == userAnswerId) {
+                    Answer userAnswer = new Answer(oldlistQuestion.get(oldIndex).getAnswerList().get(i));
+                    oldlistQuestion.get(oldIndex).setUserAnswer(userAnswer);
                 }
             }
-            final int countCorrectAnswer = count;
-            session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, countCorrectAnswer);
-            req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
+
+            if (oldlistQuestion.get(oldIndex).getUserAnswer().getAnswer() == null) {
+                req.setAttribute("errorInput", "выберите 1 из значений!");
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                return;
+            }
+
+            session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(oldlistQuestion));
+            final int nextIndex = ++oldIndex;
+
+            if (nextIndex < oldlistQuestion.size()) {
+                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, nextIndex);
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+            } else {
+                int count = 0;
+                for (int i = 0; i < oldlistQuestion.size(); i++) {
+                    if (oldlistQuestion.get(i).getUserAnswer().getCorrect() == (byte) 1) {
+                        count++;
+                    }
+                }
+                final int countCorrectAnswer = count;
+                session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, countCorrectAnswer);
+                req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
+            }
+
         }
-
-
     }
 }
