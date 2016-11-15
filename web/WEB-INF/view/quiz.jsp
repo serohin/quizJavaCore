@@ -47,11 +47,17 @@
 
           <div class="listInsideContent row">
             <h3>Выберите квиз :</h3>
-            <ul>
-              <c:forEach var="quiz" items="${quizListByThemeId}" >
-                <li><a href="./question.do?quizId=${quiz.id}">${quiz.caption}</a></li>
-              </c:forEach>
-            </ul>
+            <form action="./question.do" method="post" >
+              <ul>
+                <c:forEach var="quiz" items="${quizListByThemeId}" >
+                  <li>
+                    <button type="submit" name="quizId" value="${quiz.id}" class="btnLink">
+                      <c:out value="${quiz.caption}"/>
+                    </button>
+                  </li>
+                </c:forEach>
+              </ul>
+            </form>
             <p>
               <a class="button" href="./theme.do?sectionId=${sessionScope.sectionId}">« вернуться в темы</a>
               <a class="button rightButton" href="./section.do"> выйти в разделы </a>

@@ -263,7 +263,7 @@ label {
     float: right;
 }
 a {
-    color: #005494;
+    color: #005999;
     text-decoration: none;
     line-height: inherit;
 }
@@ -345,9 +345,9 @@ hr{
     border: 1px solid #d85820;
     padding: 0.4rem 1.7rem 0.44286rem;
 }
-/*.buttonQuestionForm:hover{
-    background-image: linear-gradient(to bottom, #e28853 0%, rgba(226, 118, 83, 0.85) 100%);
-}*/
+.buttonBackInQuestionForm:hover{
+    background-image: linear-gradient(to bottom, #e28853 0%, rgba(226, 118, 83, 0.85) 100%)!important;
+}
 .quizResultContainer h2{
     font-size: 1.5rem;
 }
@@ -427,6 +427,16 @@ ol{
     font-size: inherit;
     display: inline;
     cursor: pointer;
+}
+.btnLink{
+    border:none;
+    outline:none;
+    background:none;
+    cursor:pointer;
+    color:#005999;
+    padding:0;
+    font-family:inherit;
+    font-size:1.2rem;
 }
 
 

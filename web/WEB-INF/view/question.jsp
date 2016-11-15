@@ -41,7 +41,7 @@
                         <c:choose>
                             <c:when test="${empty errorInput}"></c:when>
                             <c:otherwise>
-                                <span style = "color:tomato"><c:out value="${errorInput}"></c:out></span></br>
+                                <span style = "color:tomato"><c:out value="${errorInput}"/></span></br>
                             </c:otherwise>
                         </c:choose>
                         <input class="button buttonQuestionForm" type="submit" value="cледующий »"/>
