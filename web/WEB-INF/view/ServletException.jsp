@@ -22,7 +22,7 @@
 
         <div class="content row">
             <div class="innerWrapContent">
-                <h2>ЭЭЭ wat`s up dock?</h2>
+                <h2>ServletExcsption</h2>
                 </br>
                 <a class="button" href="./section.do">вернуться на главную</a>
             </div>
