@@ -282,12 +282,20 @@ a:hover{
 .insideContent ul{
     list-style-position: inside;
     padding-top: 0.2rem;
+    padding-left: 2rem;
 }
 .insideContent b{
     color: #471026;
 }
 .insideContent h3{
     padding-top: 0.5rem;
+    padding-left: 2rem;
+}
+.insideContentLinkBtn{
+    margin-left: 2rem;
+}
+.insideContent form ul{
+    padding-left: 0rem;
 }
 
 .button {
@@ -313,7 +321,7 @@ a:hover{
     color: #ffffff;
 }
 .listInsideContent{
-    max-width: 600px;
+    max-width: 700px;
     padding-left: 12rem;
 }
 .delMargin{
@@ -356,6 +364,7 @@ hr{
 }
 .quizResultContainer ol{
     list-style-position: inside;
+    list-style-type: decimal;
 }
 .innerWrapContent form h2{
     font-size: 1.25rem;
@@ -438,6 +447,14 @@ ol{
     font-family:inherit;
     font-size:1.2rem;
 }
+.listInsideContent form{
+    font-size: inherit;
+    padding-left: 0rem;
+}
+.listInsideContent form h3{
+    padding-left: 0rem;
+}
+
 
 
 
