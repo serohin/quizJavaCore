@@ -4,7 +4,7 @@ package com.kamazz.quiz.dao.impl;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
-import com.kamazz.quiz.entity.User;
+import com.kamazz.quiz.model.User;
 
 import java.sql.*;
 

@@ -1,18 +1,18 @@
-package com.kamazz.quiz.entity;
+package com.kamazz.quiz.model;
 
-
-public class Theme {
+public class Quiz {
     private int id;
     private String caption;
-    private int sectionId;
+    private int themeId;
 
-    public Theme() {
+    public Quiz() {
     }
 
-    public Theme(int id, String caption, int sectionId) {
+    public Quiz(int id, String caption, int themeId) {
+
         this.id = id;
         this.caption = caption;
-        this.sectionId = sectionId;
+        this.themeId = themeId;
     }
 
     public int getId() {
@@ -31,20 +31,20 @@ public class Theme {
         this.caption = caption;
     }
 
-    public int getSectionId() {
-        return sectionId;
+    public int getThemeId() {
+        return themeId;
     }
 
-    public void setSectionId(int sectionId) {
-        this.sectionId = sectionId;
+    public void setThemeId(int themeId) {
+        this.themeId = themeId;
     }
 
     @Override
     public String toString() {
-        return "Theme{" +
+        return "Quiz{" +
                 "id=" + id +
                 ", caption='" + caption + '\'' +
-                ", sectionId=" + sectionId +
+                ", themeId=" + themeId +
                 '}';
     }
 }

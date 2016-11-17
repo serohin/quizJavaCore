@@ -1,4 +1,4 @@
-package com.kamazz.quiz.entity;
+package com.kamazz.quiz.model;
 
 
 import java.util.List;

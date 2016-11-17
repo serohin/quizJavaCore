@@ -5,7 +5,7 @@ import com.kamazz.injection.Inject;
 import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.interfaces.SectionDao;
-import com.kamazz.quiz.entity.Section;
+import com.kamazz.quiz.model.Section;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +48,7 @@ public class SectionController extends DependencyInjectionServlet {
                     conn.rollback();
                 }
                 conn.commit();
-                if (null != allSectionList) {
+                if (allSectionList != null) {
                     session.setAttribute(ATTRIBUTE_SECTION_LIST, unmodifiableList(allSectionList));
                     req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 }

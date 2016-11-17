@@ -2,7 +2,7 @@ package com.kamazz.quiz.dao.interfaces;
 
 
 import com.kamazz.quiz.dao.exception.DaoSystemException;
-import com.kamazz.quiz.entity.Section;
+import com.kamazz.quiz.model.Section;
 
 import java.sql.Connection;
 import java.util.List;

@@ -6,7 +6,7 @@ import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.QuizDao;
-import com.kamazz.quiz.entity.Quiz;
+import com.kamazz.quiz.model.Quiz;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

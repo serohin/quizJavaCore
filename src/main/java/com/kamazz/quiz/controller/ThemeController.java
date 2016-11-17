@@ -6,7 +6,8 @@ import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.ThemeDao;
-import com.kamazz.quiz.entity.Theme;
+import com.kamazz.quiz.model.Theme;
+import com.kamazz.quiz.validator.RequestParameterValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -33,29 +35,25 @@ public class ThemeController extends DependencyInjectionServlet {
 
     @Inject("themeDaoImpl")
     ThemeDao themeDao;
+
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
+
+    @Inject("requestParameterValidatorImpl")
+    RequestParameterValidator paramValidator;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String strId = req.getParameter(PARAM_SECTION_ID);
-        //Если пришли с квизов -ничего
-        //Если с Разделов,тогда тянем тему
+        Map<String, String> errorMapSectionId = paramValidator.validateId(req.getParameter(PARAM_SECTION_ID));
 
-        if (strId == null) {
+        if (!errorMapSectionId.isEmpty()) {
             req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             return;
         }
-        int idValueOff = 0;
-        try {
-            idValueOff = Integer.valueOf(strId);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            //logger.debug(e);
-            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-            return;
-        }
+
+        String strId = req.getParameter(PARAM_SECTION_ID);
+        int idValueOff = Integer.valueOf(strId);
 
         HttpSession session = req.getSession(true);
         Enumeration<String> namesAttribute = session.getAttributeNames();
@@ -97,11 +95,6 @@ public class ThemeController extends DependencyInjectionServlet {
                 //logger.debug(e);
             }
 
-
         }
-
-
-
-
     }
 }

@@ -5,8 +5,8 @@ import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.AnswerDao;
 import com.kamazz.quiz.dao.interfaces.QuestionDao;
-import com.kamazz.quiz.entity.Answer;
-import com.kamazz.quiz.entity.Question;
+import com.kamazz.quiz.model.Answer;
+import com.kamazz.quiz.model.Question;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

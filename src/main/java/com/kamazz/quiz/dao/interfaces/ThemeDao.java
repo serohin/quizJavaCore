@@ -3,7 +3,7 @@ package com.kamazz.quiz.dao.interfaces;
 
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
-import com.kamazz.quiz.entity.Theme;
+import com.kamazz.quiz.model.Theme;
 
 import java.sql.Connection;
 import java.util.List;
