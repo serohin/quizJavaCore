@@ -43,7 +43,7 @@
                                 <li><a href="./quiz.do?themeId=${theme.id}">${theme.caption}</a></li>
                             </c:forEach>
                         </ul>
-                        <a class="button" href="./section.do">« вернуться в разделы</a>
+                        <a class="button insideContentLinkBtn" href="./section.do">« вернуться в разделы</a>
                     </div>
                 </div>
             </div>
