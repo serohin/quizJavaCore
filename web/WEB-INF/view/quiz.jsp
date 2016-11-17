@@ -46,8 +46,9 @@
           </c:forEach>
 
           <div class="listInsideContent row">
-            <h3>Выберите квиз :</h3>
+
             <form action="./question.do" method="post" >
+              <h3>Выберите квиз :</h3>
               <ul>
                 <c:forEach var="quiz" items="${quizListByThemeId}" >
                   <li>
