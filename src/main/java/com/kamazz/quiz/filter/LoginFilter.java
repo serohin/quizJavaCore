@@ -7,7 +7,8 @@ import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
-import com.kamazz.quiz.entity.User;
+import com.kamazz.quiz.model.User;
+import com.kamazz.quiz.validator.RequestParameterValidator;
 import com.kamazz.quiz.validator.UserValidator;
 
 import javax.servlet.FilterChain;
@@ -38,6 +39,9 @@ public class LoginFilter extends DependencyInjectionFilter {
     @Inject("userValidatorImpl")
     UserValidator userValidator;
 
+    @Inject("requestParameterValidatorImpl")
+    RequestParameterValidator paramValidator;
+
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
 
@@ -45,33 +49,27 @@ public class LoginFilter extends DependencyInjectionFilter {
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
 
         HttpSession session = req.getSession(false);
-        String userInSession = (String) session.getAttribute(PARAM_USER);
-        if(null != userInSession){
+        Map <String,String> errorMapUserInSession = paramValidator.validate((String) session.getAttribute(PARAM_USER));
+
+        if(errorMapUserInSession.isEmpty()){
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
             return;
         }
 
         req.setCharacterEncoding("UTF-8");
-        String userName = null;
-        String password = null;
-        if (req.getParameter(PARAM_USERNAME) != null & req.getParameter(PARAM_USERNAME) != null) {
-            userName = req.getParameter(PARAM_USERNAME).trim();
-            password = req.getParameter(PARAM_PASSWORD).trim();
-        }
-
-
-
+        String userName = req.getParameter(PARAM_USERNAME);
+        String password = req.getParameter(PARAM_PASSWORD);
         final User user = new User(userName, password);
-        Map<String, String> errorMap = userValidator.validate(user);
+        Map<String, String> errorMapUser = userValidator.validate(user);
 
-        if (errorMap.isEmpty() & null == userInSession) {
+        if (errorMapUser.isEmpty() & !errorMapUserInSession.isEmpty()) {
             User newUser = null;
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
                 } catch (NoSuchEntityException e) {
-                    errorMap.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
+                    errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 }
@@ -80,19 +78,20 @@ public class LoginFilter extends DependencyInjectionFilter {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-            if (null != newUser){
+
+            if (errorMapUser.isEmpty()){
                 if(newUser.getPassword().equals(password)) {
                     session.setAttribute(PARAM_USER, newUser.getUsername());
                     resp.sendRedirect(REDIRECT_OK_URL);
                     return;
                 }else{
-                    errorMap.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
+                    errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
                 }
             }
         }
 
-        if (!errorMap.isEmpty()) {
-            req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMap);
+        if (!errorMapUser.isEmpty()) {
+            req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUser);
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
         }
     }
