@@ -7,8 +7,9 @@ import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.QuestionDao;
-import com.kamazz.quiz.entity.Answer;
-import com.kamazz.quiz.entity.Question;
+import com.kamazz.quiz.model.Question;
+import com.kamazz.quiz.service.QuestionService;
+import com.kamazz.quiz.validator.RequestParameterValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -37,102 +40,86 @@ public class QuestionController extends DependencyInjectionServlet {
 
     @Inject("questionDaoImpl")
     QuestionDao questionDao;
+
+    @Inject("requestParameterValidatorImpl")
+    RequestParameterValidator paramValidator;
+
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
 
+    @Inject("questionService")
+    QuestionService questionService;
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String method = req.getMethod();
         if (method.equalsIgnoreCase("GET")) {
             req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             return;
         }
+        Map<String, String> errorMapQuizId = paramValidator.validate(req.getParameter(PARAM_QUIZ_ID));
 
-        String strId = req.getParameter(PARAM_QUIZ_ID);
-        String userAnswerIdStr = req.getParameter(PARAM_USER_ANSWER_ID);
-
-        if (strId != null & userAnswerIdStr == null) {
-            try {
-                Integer.valueOf(strId);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                //logger.debug(e);
-                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-                return;
-            }
-            int id = Integer.valueOf(strId);
+        if (errorMapQuizId.isEmpty()) {
+            int id = Integer.valueOf(req.getParameter(PARAM_QUIZ_ID));
+            Map<String, String> errorMapQuestionList = new HashMap<>();
+            List<Question> questionList = null;
 
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-                List<Question> questionList = null;
                 try {
                     questionList = questionDao.getQuestionListByQuizId(id, conn);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 } catch (NoSuchEntityException e) {
-                    e.printStackTrace();
-                    //logger.debug(e);
-                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-
+                    errorMapQuestionList.put("questionList", "questionList == null");
                 }
                 conn.commit();
-                if (null != questionList) {
-                    final int index = 0;
-                    HttpSession session = req.getSession(true);
-                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
-                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                }
             } catch (SQLException e) {
-                e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-        } else {
 
-            if (userAnswerIdStr == null) {
-                req.setAttribute("errorInput", "выберите 1 из значений!");
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                return;
-            }
-            int userAnswerId = Integer.valueOf(userAnswerIdStr);
-            HttpSession session = req.getSession(true);
-            //тащим текущую позицию вопроса
-            int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
-            //тащим старый список вопросов
-            List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
-
-            for (int i = 0; i < oldlistQuestion.get(oldIndex).getAnswerList().size(); i++) {
-                if (oldlistQuestion.get(oldIndex).getAnswerList().get(i).getIdAnswer() == userAnswerId) {
-                    Answer userAnswer = new Answer(oldlistQuestion.get(oldIndex).getAnswerList().get(i));
-                    oldlistQuestion.get(oldIndex).setUserAnswer(userAnswer);
-                }
-            }
-
-            if (oldlistQuestion.get(oldIndex).getUserAnswer().getAnswer() == null) {
-                req.setAttribute("errorInput", "выберите 1 из значений!");
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                return;
-            }
-
-            session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(oldlistQuestion));
-            final int nextIndex = ++oldIndex;
-
-            if (nextIndex < oldlistQuestion.size()) {
-                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, nextIndex);
+            if (errorMapQuestionList.isEmpty()) {
+                final int index = 0;
+                HttpSession session = req.getSession(true);
+                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
+                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
                 req.getRequestDispatcher(PAGE_OK).forward(req, resp);
             } else {
-                int count = 0;
-                for (int i = 0; i < oldlistQuestion.size(); i++) {
-                    if (oldlistQuestion.get(i).getUserAnswer().getCorrect() == (byte) 1) {
-                        count++;
-                    }
-                }
-                final int countCorrectAnswer = count;
-                session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, countCorrectAnswer);
-                req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
+                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             }
+        } else {
+            Map<String, String> errorMapUserAnswerId = paramValidator.validate(req.getParameter(PARAM_USER_ANSWER_ID));
 
+            if (errorMapUserAnswerId.isEmpty()) {
+                int userAnswerId = Integer.valueOf(req.getParameter(PARAM_USER_ANSWER_ID));
+                HttpSession session = req.getSession(true);
+                List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
+                int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
+                questionService.setCurrentQuestionList(oldlistQuestion, oldIndex);
+
+                if(questionService.isAnswerListContainsUserAnswer(userAnswerId)){
+                    questionService.addUserAnswerToCurrentQuestion(userAnswerId);
+                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionService.getQuestionList()));
+                }else{
+                    req.setAttribute("errorInput", "выберите 1 из значений!");
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                    return;
+                }
+
+                if (!questionService.isLastQuestion()) {
+                    final int nextIndex = questionService.getIndex();
+                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, nextIndex);
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                } else {
+                    final int countCorrectAnswer = questionService.checkCorrectUserAnswer();
+                    session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, countCorrectAnswer);
+                    req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
+                }
+            } else {
+                req.setAttribute("errorInput", "выберите 1 из значений!");
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                return;
+            }
         }
     }
 }

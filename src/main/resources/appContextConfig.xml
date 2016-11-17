@@ -12,12 +12,15 @@
 
        <!--VALIDATOR-->
        <bean name="userValidatorImpl" class="com.kamazz.quiz.validator.UserValidatorImpl" scope="prototype"/>
+       <bean name="requestParameterValidatorImpl" class="com.kamazz.quiz.validator.RequestParameterValidatorImpl" scope="prototype"/>
 
        <!--INIT_CTX_DATASOURCE-->
        <bean name="jndiDatasource" class="com.kamazz.quiz.dao.datasource.JNDIDatasource" scope="singleton">
               <property name="datasourceContext" value="java:comp/env"/>
               <property name="dataBaseName" value="jdbc/QuizDB"/>
        </bean>
+
+       <bean name="questionService" class="com.kamazz.quiz.service.QuestionService" scope="prototype"/>
 
 
 </beans>
