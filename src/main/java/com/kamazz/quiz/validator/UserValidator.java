@@ -1,6 +1,6 @@
 package com.kamazz.quiz.validator;
 
-import com.kamazz.quiz.entity.User;
+import com.kamazz.quiz.model.User;
 
 import java.util.Map;
 
