@@ -24,7 +24,11 @@
             <div class="innerWrapContent">
                 <h2>ServletExcsption</h2>
                 </br>
-                <a class="button" href="./section.do">вернуться на главную</a>
+                <form action="/section.do" method="post" >
+                    <button type="submit" class="button">
+                        вернуться в разделы
+                    </button>
+                </form>
             </div>
         </div>
         <footer class="footer">

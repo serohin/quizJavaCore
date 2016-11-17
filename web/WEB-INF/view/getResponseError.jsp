@@ -24,12 +24,12 @@
     </header>
     <div class="content row">
       <div class="innerWrapContent">
-        <h2>Такой страницы нет!</h2>
+        <h2>Воспользуйтесь навигацией по сайту!</h2>
         </br>
         <form action="/section.do" method="post" >
-           <button type="submit" class="button">
-             вернуться в разделы
-            </button>
+          <button type="submit" class="button">
+            вернуться в разделы
+          </button>
         </form>
       </div>
     </div>
@@ -44,3 +44,4 @@
 </div>
 </body>
 </html>
+
