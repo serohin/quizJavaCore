@@ -21,8 +21,9 @@ import static java.util.Collections.unmodifiableList;
 
 public class SectionController extends DependencyInjectionServlet {
     public static final String ATTRIBUTE_SECTION_LIST = "sectionList";
-    public static final String PAGE_OK = "WEB-INF/view/section.jsp";
 
+    public static final String PAGE_OK = "WEB-INF/view/section.jsp";
+    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
 
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
@@ -34,10 +35,7 @@ public class SectionController extends DependencyInjectionServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
         List<Section> sectionList = (List<Section>) session.getAttribute(ATTRIBUTE_SECTION_LIST);
-
-        if (sectionList != null) {
-            req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-        } else {
+        if(sectionList == null){
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
 
@@ -57,6 +55,13 @@ public class SectionController extends DependencyInjectionServlet {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
+        }else{
+            req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(PAGE_OK).forward(req, resp);
     }
 }
