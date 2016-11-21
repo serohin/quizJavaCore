@@ -291,9 +291,7 @@ a:hover{
     padding-top: 0.5rem;
     padding-left: 2rem;
 }
-.insideContentLinkBtn{
-    margin-left: 2rem;
-}
+
 .insideContent form ul{
     padding-left: 0rem;
 }
@@ -374,9 +372,13 @@ hr{
 .delPadding{
     padding: 0rem!important;
 }
+.formLeftButton{
+    float: left;
+    margin-right: 20px;
+}
 .rightButton{
     background: #e27653;
-    min-width: 155px;
+    min-width: 192px;
     text-align: center;
 }
 .rightButton:hover{
