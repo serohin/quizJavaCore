@@ -60,7 +60,7 @@
               </ul>
             </form>
             <form class="formLeftButton" action="/theme.do" method="post" >
-              <button type="submit" name="sectionId" value="0" class="button">
+              <button type="submit" name="sectionId" class="button">
                 « вернуться в темы
               </button>
             </form>
