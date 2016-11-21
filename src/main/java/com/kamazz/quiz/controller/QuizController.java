@@ -26,6 +26,7 @@ public class QuizController extends DependencyInjectionServlet {
     public static final String ATTRIBUTE_QUIZ_LIST_BY_THEME_ID = "quizListByThemeId";
     public static final String ATTRIBUTE_CURRENT_THEME_ID = "currentThemeId";
 
+    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
     public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
     public static final String PAGE_OK = "WEB-INF/view/quiz.jsp";
 
@@ -37,6 +38,11 @@ public class QuizController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String strThemeId = req.getParameter(PARAM_THEME_ID);
 
         if (strThemeId == null) {

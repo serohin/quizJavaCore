@@ -32,6 +32,7 @@ public class QuestionController extends DependencyInjectionServlet {
     public static final String PAGE_OK = "WEB-INF/view/question.jsp";
     public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
     public static final String PAGE_QUIZ_RESULT = "WEB-INF/view/quizResult.jsp";
+    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
 
     public static final String ATTRIBUTE_CURRENT_QUESTION_LIST = "question";
     public static final String ATTRIBUTE_CURRENT_QUESTION_INDEX = "quizIndex";
@@ -49,6 +50,11 @@ public class QuestionController extends DependencyInjectionServlet {
 
     @Inject("questionService")
     QuestionService questionService;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
