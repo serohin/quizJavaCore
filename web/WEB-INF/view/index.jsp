@@ -13,8 +13,8 @@
           <div class="leftColumnInHeader">
             <div class="innerLeftColumnInHeader">
                 <p>JAVA CORE QUIZ</p>
-                <form action="./registerNewUser.do" >
-                  <input class="submitButton" type="submit" value="зарегистрироваться »"  name="submit" />
+                <form action="/registerNewUser.do" method="post" >
+                  <button class="submitButton" type="submit">зарегистрироваться »</button>
                 </form>
             </div>
           </div>
