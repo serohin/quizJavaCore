@@ -34,7 +34,7 @@ public class UserValidatorImpl implements UserValidator {
         }else if(username.length() > 20){
             errorMap.put("userName","не более 20-ти символов");
         }else if(username.trim().equals("")){
-            errorMap.put("username", "заполните username");
+            errorMap.put("userName", "заполните username");
         }
     }
 }
