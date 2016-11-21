@@ -61,13 +61,16 @@ public class LoginFilter extends DependencyInjectionFilter {
         String password = req.getParameter(PARAM_PASSWORD);
         final User user = new User(userName, password);
         Map<String, String> errorMapUser = userValidator.validate(user);
+        User newUser = null;
 
         if (errorMapUser.isEmpty() & !errorMapUserInSession.isEmpty()) {
-            User newUser = null;
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
+                    if(!newUser.getPassword().equals(password)){
+                        errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
+                    }
                 } catch (NoSuchEntityException e) {
                     errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
                 } catch (DaoSystemException e) {
@@ -78,19 +81,12 @@ public class LoginFilter extends DependencyInjectionFilter {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-
-            if (errorMapUser.isEmpty()){
-                if(newUser.getPassword().equals(password)) {
-                    session.setAttribute(PARAM_USER, newUser.getUsername());
-                    resp.sendRedirect(REDIRECT_OK_URL);
-                    return;
-                }else{
-                    errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
-                }
-            }
         }
 
-        if (!errorMapUser.isEmpty()) {
+        if (errorMapUser.isEmpty()){
+            session.setAttribute(PARAM_USER, newUser.getUsername());
+            resp.sendRedirect(REDIRECT_OK_URL);
+        }else{
             req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUser);
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
         }
