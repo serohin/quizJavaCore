@@ -7,6 +7,7 @@ import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.QuizDao;
 import com.kamazz.quiz.model.Quiz;
+import com.kamazz.quiz.validator.RequestParameterValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -33,6 +35,9 @@ public class QuizController extends DependencyInjectionServlet {
     @Inject("quizDaoImpl")
     QuizDao quizDao;
 
+    @Inject("requestParameterValidatorImpl")
+    RequestParameterValidator paramValidator;
+
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
 
@@ -43,47 +48,40 @@ public class QuizController extends DependencyInjectionServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String strThemeId = req.getParameter(PARAM_THEME_ID);
+        Map<String, String> errorMap = paramValidator.validate(req.getParameter(PARAM_THEME_ID));
 
-        if (strThemeId == null) {
+        if (!errorMap.isEmpty()) {
             req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
         } else {
-
-            try {
-                Integer.valueOf(strThemeId);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                //logger.debug(e);
-                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-                return;
-            }
-
+            String strThemeId = req.getParameter(PARAM_THEME_ID);
             final int themeId = Integer.valueOf(strThemeId);
-            HttpSession session = req.getSession(true);
-            session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
+            List<Quiz> quizList = null;
 
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-                List<Quiz> quizList = null;
+
                 try {
                     quizList = quizDao.getQuizListByThemeId(themeId, conn);
                 } catch (NoSuchEntityException e) {
-                    e.printStackTrace();
+                    errorMap.put("quizListError", "Нет квизов для themeId = " + themeId);
                     //logger.debug(e);
-                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
-                    e.printStackTrace();
                     //logger.debug(e);
                 }
                 conn.commit();
-                if (quizList != null) {
-                    session.setAttribute(ATTRIBUTE_QUIZ_LIST_BY_THEME_ID, unmodifiableList(quizList));
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                }
             } catch (SQLException e) {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
+            }
+
+            if (errorMap.isEmpty()) {
+                HttpSession session = req.getSession(true);
+                session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
+                session.setAttribute(ATTRIBUTE_QUIZ_LIST_BY_THEME_ID, unmodifiableList(quizList));
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+            } else {
+                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             }
         }
     }
