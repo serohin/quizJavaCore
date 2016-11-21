@@ -16,8 +16,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
-
 
 public class SectionController extends DependencyInjectionServlet {
     public static final String ATTRIBUTE_SECTION_LIST = "sectionList";
@@ -46,15 +44,10 @@ public class SectionController extends DependencyInjectionServlet {
                     conn.rollback();
                 }
                 conn.commit();
-                if (allSectionList != null) {
-                    session.setAttribute(ATTRIBUTE_SECTION_LIST, unmodifiableList(allSectionList));
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                }
-
             } catch (SQLException e) {
-                e.printStackTrace();//убрать
                 //logger.debug(e);
             }
+
         }else{
             req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
         }
