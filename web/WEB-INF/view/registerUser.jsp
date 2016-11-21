@@ -34,7 +34,7 @@
           </div>
 
           <div class="registerUserDiv"><label for="password"> Password <span class="indicates">*</span></label>
-            <input class="textField" name ="password" type="password"  id ="password" value="${InputPasswordValue}" size="20" />
+            <input class="textField" name ="password" type="password"  id ="password" value="" size="20" />
             <c:choose>
               <c:when test="${empty errorMap.password}"></c:when>
               <c:otherwise>
