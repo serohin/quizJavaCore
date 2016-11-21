@@ -50,47 +50,44 @@ public class ThemeController extends DependencyInjectionServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Map<String, String> errorMapSectionId = paramValidator.validateId(req.getParameter(PARAM_SECTION_ID));
+        Map<String, String> errorMap = paramValidator.validateId(req.getParameter(PARAM_SECTION_ID));
 
-        if (!errorMapSectionId.isEmpty()) {
-            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-            return;
-        }
-
-        String strId = req.getParameter(PARAM_SECTION_ID);
-        int idValueOff = Integer.valueOf(strId);
-
-        HttpSession session = req.getSession(true);
-        if(idValueOff == 0){
+        if (!errorMap.isEmpty()) {
             req.getRequestDispatcher(PAGE_OK).forward(req, resp);
             return;
-        }else {
-            final int id = idValueOff;
-            session.setAttribute(PARAM_SECTION_ID,id);
+        }else{
+            String strId = req.getParameter(PARAM_SECTION_ID);
+            int idValueOff = Integer.valueOf(strId);
+            List<Theme> themeList = null;
+
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-                List<Theme> themeList = null;
                 try {
-                    themeList = themeDao.getThemesBySectionId(id, conn);
+                    themeList = themeDao.getThemesBySectionId(idValueOff, conn);
                 } catch (DaoSystemException e) {
                     conn.rollback();
-                    e.printStackTrace();
                     //logger.debug(e);
                 } catch (NoSuchEntityException e) {
-                    e.printStackTrace();
+                    errorMap.put("themeListError", "Нет тем для id = " + idValueOff);
                     //logger.debug(e);
-                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);//use errorMap with validator
                 }
                 conn.commit();
-                if (null != themeList) {
-                    session.setAttribute(ATTRIBUTE_THEME_LIST_BY_SECTION_ID, unmodifiableList(themeList));
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-                }
             } catch (SQLException e) {
-                e.printStackTrace();//убрать
+                e.printStackTrace();
                 //logger.debug(e);
             }
 
+            if (errorMap.isEmpty()) {
+                final int id = idValueOff;
+                HttpSession session = req.getSession(true);
+                session.setAttribute(PARAM_SECTION_ID,id);
+                session.setAttribute(ATTRIBUTE_THEME_LIST_BY_SECTION_ID, unmodifiableList(themeList));
+                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+            }else{
+                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
+            }
+
         }
+
     }
 }
