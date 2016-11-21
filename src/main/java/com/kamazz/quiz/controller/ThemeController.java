@@ -16,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +29,8 @@ public class ThemeController extends DependencyInjectionServlet {
     public static final String PARAM_SECTION_ID = "sectionId";
     public static final String ATTRIBUTE_THEME_LIST_BY_SECTION_ID = "themeListBySectionId";
 
-    public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
+    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
+    public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";//delete???
     public static final String PAGE_OK = "WEB-INF/view/theme.jsp";
 
     @Inject("themeDaoImpl")
@@ -44,6 +44,11 @@ public class ThemeController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Map<String, String> errorMapSectionId = paramValidator.validateId(req.getParameter(PARAM_SECTION_ID));
 
@@ -56,16 +61,7 @@ public class ThemeController extends DependencyInjectionServlet {
         int idValueOff = Integer.valueOf(strId);
 
         HttpSession session = req.getSession(true);
-        Enumeration<String> namesAttribute = session.getAttributeNames();
-        int currentSectionIdInSession = 0;
-        while(namesAttribute.hasMoreElements()){
-            if(namesAttribute.nextElement().equals(PARAM_SECTION_ID) ){
-                currentSectionIdInSession = (int)session.getAttribute(PARAM_SECTION_ID);
-            }
-        }
-
-
-        if(idValueOff == currentSectionIdInSession){
+        if(idValueOff == 0){
             req.getRequestDispatcher(PAGE_OK).forward(req, resp);
             return;
         }else {
@@ -83,7 +79,7 @@ public class ThemeController extends DependencyInjectionServlet {
                 } catch (NoSuchEntityException e) {
                     e.printStackTrace();
                     //logger.debug(e);
-                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
+                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);//use errorMap with validator
                 }
                 conn.commit();
                 if (null != themeList) {
