@@ -63,7 +63,7 @@ public class QuestionController extends DependencyInjectionServlet {
             req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             return;
         }
-        Map<String, String> errorMapQuizId = paramValidator.validate(req.getParameter(PARAM_QUIZ_ID));
+        Map<String, String> errorMapQuizId = paramValidator.validateId(req.getParameter(PARAM_QUIZ_ID));
 
         if (errorMapQuizId.isEmpty()) {
             int id = Integer.valueOf(req.getParameter(PARAM_QUIZ_ID));
