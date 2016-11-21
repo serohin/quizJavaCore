@@ -7,6 +7,7 @@ import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
 import com.kamazz.quiz.model.User;
+import com.kamazz.quiz.validator.RequestParameterValidator;
 import com.kamazz.quiz.validator.UserValidator;
 
 import javax.servlet.ServletException;
@@ -39,6 +40,7 @@ public class RegisterUserController extends DependencyInjectionServlet {
     public static final String KEY_ERROR_MAP_USERNAME = "userName";
 
     public static final String PAGE_MORE_INFO = "WEB-INF/view/registerUser.jsp";
+    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
     public static final String REDIRECT_OK_URL = "./section.do";
 
 
@@ -48,26 +50,32 @@ public class RegisterUserController extends DependencyInjectionServlet {
     @Inject("userValidatorImpl")
     UserValidator userValidator;
 
+    @Inject("requestParameterValidatorImpl")
+    RequestParameterValidator paramValidator;
+
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getMethod();
-        if (method.equalsIgnoreCase("GET")) {
-            req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
-            return;
-        }
 
         String userName = req.getParameter(PARAM_USERNAME);
         String password = req.getParameter(PARAM_PASSWORD);
 
         final User userRegister = new User(userName, password);
-        final Map<String, String> errorMapUserRegister = userValidator.validate(userRegister);
+        Map<String, String> errorMapUserRegister = userValidator.validate(userRegister);
 
-        String invite = req.getParameter(PARAM_INVITE);
-        if (!invite.equals(INVITE)) {
-            errorMapUserRegister.put(KEY_ERROR_MAP_FALSE_INVITE, "Введите invite, который находится в моем резюме.");
+        Map<String,String> errorMapInvite = paramValidator.validate(req.getParameter(PARAM_INVITE));
+        if(errorMapInvite.isEmpty()){
+            String invite = req.getParameter(PARAM_INVITE);
+            if (!invite.equals(INVITE)) {
+                errorMapUserRegister.put(KEY_ERROR_MAP_FALSE_INVITE, "Введите invite, который находится в моем резюме.");
+            }
         }
 
         if (errorMapUserRegister.isEmpty()) {
@@ -75,7 +83,6 @@ public class RegisterUserController extends DependencyInjectionServlet {
                 conn.setAutoCommit(false);
                 User tmpUser = null;
                 try {
-
                     try {
                         tmpUser = userDao.getUserByName(userRegister.getUsername(), conn);
                     } catch (NoSuchEntityException e) {/*NOP*/}
@@ -104,7 +111,6 @@ public class RegisterUserController extends DependencyInjectionServlet {
             req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUserRegister);
             req.setAttribute(ATTRIBUTE_INPUT_USERNAME_VALUE, userName);
             req.setAttribute(ATTRIBUTE_INPUT_PASSWORD_VALUE, password);
-            req.setAttribute(ATTRIBUTE_INPUT_INVITE_VALUE, invite);
             req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
         }
     }
