@@ -29,12 +29,18 @@
                 <div class="insideContent">
 
                         <div class="listInsideContent row">
-                            <h3>Выберите раздел Java Core :</h3>
-                            <ul>
-                                <c:forEach var="section" items="${sectionList}" varStatus="loop">
-                                    <li><a href="./theme.do?sectionId=${section.id}">${section.caption}</a></li>
-                                </c:forEach>
-                            </ul>
+                            <form action="./theme.do" method="post" >
+                                <h3>Выберите раздел Java Core :</h3>
+                                <ul>
+                                    <c:forEach var="section" items="${sectionList}" varStatus="loop">
+                                        <li>
+                                            <button type="submit" name="sectionId" value="${section.id}" class="btnLink">
+                                                <c:out value="${section.caption}"/>
+                                            </button>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </form>
                         </div>
                 </div>
             </div>

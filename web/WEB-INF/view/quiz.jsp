@@ -59,10 +59,16 @@
                 </c:forEach>
               </ul>
             </form>
-            <p>
-              <a class="button" href="./theme.do?sectionId=${sessionScope.sectionId}">« вернуться в темы</a>
-              <a class="button rightButton" href="./section.do"> выйти в разделы </a>
-            </p>
+            <form class="formLeftButton" action="/theme.do" method="post" >
+              <button type="submit" name="sectionId" value="0" class="button">
+                « вернуться в темы
+              </button>
+            </form>
+            <form action="/section.do" method="post" >
+              <button type="submit" class="button rightButton">
+                выйти в разделы
+              </button>
+            </form>
           </div>
         </div>
       </div>

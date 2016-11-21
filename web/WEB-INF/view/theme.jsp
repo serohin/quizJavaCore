@@ -38,12 +38,22 @@
                     </c:forEach>
                     <div class="listInsideContent row">
                         <h3>Темы раздела :</h3>
+                        <form action="/quiz.do" method="post" >
                         <ul>
                             <c:forEach var="theme" items="${sessionScope.themeListBySectionId}" >
-                                <li><a href="./quiz.do?themeId=${theme.id}">${theme.caption}</a></li>
+                                <li>
+                                    <button type="submit" name="themeId" value="${theme.id}" class="btnLink">
+                                        <c:out value="${theme.caption}"/>
+                                    </button>
+                                </li>
                             </c:forEach>
                         </ul>
-                        <a class="button insideContentLinkBtn" href="./section.do">« вернуться в разделы</a>
+                        </form>
+                        <form action="/section.do" method="post" >
+                            <button type="submit" class="button">
+                                « вернуться в разделы
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
