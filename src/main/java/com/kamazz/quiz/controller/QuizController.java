@@ -50,39 +50,33 @@ public class QuizController extends DependencyInjectionServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Map<String, String> errorMap = paramValidator.validate(req.getParameter(PARAM_THEME_ID));
 
-        if (!errorMap.isEmpty()) {
-            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-        } else {
+        if (errorMap.isEmpty()) {
             String strThemeId = req.getParameter(PARAM_THEME_ID);
             final int themeId = Integer.valueOf(strThemeId);
-            List<Quiz> quizList = null;
-
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-
                 try {
-                    quizList = quizDao.getQuizListByThemeId(themeId, conn);
+                    List<Quiz> quizList = quizDao.getQuizListByThemeId(themeId, conn);
+                    HttpSession session = req.getSession(true);
+                    session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
+                    session.setAttribute(ATTRIBUTE_QUIZ_LIST_BY_THEME_ID, unmodifiableList(quizList));
+                    // OK
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (NoSuchEntityException e) {
-                    errorMap.put("quizListError", "Нет квизов для themeId = " + themeId);
+                    //req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                     //logger.debug(e);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                     //logger.debug(e);
                 }
                 conn.commit();
+                return;
             } catch (SQLException e) {
                 e.printStackTrace();//убрать
                 //logger.debug(e);
             }
-
-            if (errorMap.isEmpty()) {
-                HttpSession session = req.getSession(true);
-                session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
-                session.setAttribute(ATTRIBUTE_QUIZ_LIST_BY_THEME_ID, unmodifiableList(quizList));
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-            } else {
-                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-            }
         }
+        // FAIL
+        req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
     }
 }

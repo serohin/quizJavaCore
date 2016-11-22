@@ -33,7 +33,6 @@ public class RegisterUserController extends DependencyInjectionServlet {
     public static final String ATTRIBUTE_ERROR_MAP = "errorMap";
     public static final String ATTRIBUTE_INPUT_USERNAME_VALUE = "InputUserNameValue";
     public static final String ATTRIBUTE_INPUT_PASSWORD_VALUE = "InputPasswordValue";
-    public static final String ATTRIBUTE_INPUT_INVITE_VALUE = "InputInviteValue";
 
     public static final String INVITE = "kamazz";
     public static final String KEY_ERROR_MAP_FALSE_INVITE = "falseInvite";
@@ -63,10 +62,8 @@ public class RegisterUserController extends DependencyInjectionServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String userName = req.getParameter(PARAM_USERNAME);
         String password = req.getParameter(PARAM_PASSWORD);
-
         final User userRegister = new User(userName, password);
         Map<String, String> errorMapUserRegister = userValidator.validate(userRegister);
 
@@ -77,41 +74,36 @@ public class RegisterUserController extends DependencyInjectionServlet {
                 errorMapUserRegister.put(KEY_ERROR_MAP_FALSE_INVITE, "Введите invite, который находится в моем резюме.");
             }
         }
-
         if (errorMapUserRegister.isEmpty()) {
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-                User tmpUser = null;
                 try {
                     try {
-                        tmpUser = userDao.getUserByName(userRegister.getUsername(), conn);
-                    } catch (NoSuchEntityException e) {/*NOP*/}
-
-                    if (null != tmpUser) {
+                        userDao.getUserByName(userRegister.getUsername(), conn);
                         errorMapUserRegister.put(KEY_ERROR_MAP_USERNAME, "такой логин уже существует!");
-                    }
+                        req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUserRegister);
+                        req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
+                    } catch (NoSuchEntityException e) {/*NOP*/}
 
                     if (errorMapUserRegister.isEmpty()) {
                         User newUser = userDao.insertNewUser(userRegister, conn);
                         HttpSession session = req.getSession(true);
                         session.setAttribute(PARAM_USER, newUser.getUsername());
                         resp.sendRedirect(REDIRECT_OK_URL);
-                    } else {
-                        req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUserRegister);
-                        req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
                     }
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 }
                 conn.commit();
+                return;
             } catch (SQLException e) {
                 //logger.debug(e);
             }
-        } else {
-            req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUserRegister);
-            req.setAttribute(ATTRIBUTE_INPUT_USERNAME_VALUE, userName);
-            req.setAttribute(ATTRIBUTE_INPUT_PASSWORD_VALUE, password);
-            req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
         }
+        req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUserRegister);
+        req.setAttribute(ATTRIBUTE_INPUT_USERNAME_VALUE, userName);
+        req.setAttribute(ATTRIBUTE_INPUT_PASSWORD_VALUE, password);
+        req.getRequestDispatcher(PAGE_MORE_INFO).forward(req, resp);
+
     }
 }

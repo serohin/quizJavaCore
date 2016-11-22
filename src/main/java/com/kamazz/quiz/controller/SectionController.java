@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
+
 
 public class SectionController extends DependencyInjectionServlet {
     public static final String ATTRIBUTE_SECTION_LIST = "sectionList";
@@ -33,24 +35,26 @@ public class SectionController extends DependencyInjectionServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
         List<Section> sectionList = (List<Section>) session.getAttribute(ATTRIBUTE_SECTION_LIST);
-        if(sectionList == null){
+        if (sectionList == null) {
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
-
-                List<Section> allSectionList = null;
                 try {
-                    allSectionList = sectionDao.getAllSection(conn);
+                    List<Section> allSectionList = sectionDao.getAllSection(conn);
+                    session.setAttribute(ATTRIBUTE_SECTION_LIST, unmodifiableList(allSectionList));
+                    // OK
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 }
                 conn.commit();
+                return;
             } catch (SQLException e) {
                 //logger.debug(e);
             }
-
-        }else{
-            req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
         }
+        // FAIL
+        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+
     }
 
     @Override

@@ -49,45 +49,35 @@ public class ThemeController extends DependencyInjectionServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         Map<String, String> errorMap = paramValidator.validateId(req.getParameter(PARAM_SECTION_ID));
 
-        if (!errorMap.isEmpty()) {
-            req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-            return;
-        }else{
+        if (errorMap.isEmpty()) {
             String strId = req.getParameter(PARAM_SECTION_ID);
-            int idValueOff = Integer.valueOf(strId);
-            List<Theme> themeList = null;
-
+            final int id = Integer.valueOf(strId);
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
-                    themeList = themeDao.getThemesBySectionId(idValueOff, conn);
+                    List<Theme> themeList = themeDao.getThemesBySectionId(id, conn);
+                    HttpSession session = req.getSession(true);
+                    session.setAttribute(PARAM_SECTION_ID,id);
+                    session.setAttribute(ATTRIBUTE_THEME_LIST_BY_SECTION_ID, unmodifiableList(themeList));
+                    // OK
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                     //logger.debug(e);
                 } catch (NoSuchEntityException e) {
-                    errorMap.put("themeListError", "Нет тем для id = " + idValueOff);
+                    //req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                     //logger.debug(e);
                 }
                 conn.commit();
+                return;
             } catch (SQLException e) {
                 e.printStackTrace();
                 //logger.debug(e);
             }
-
-            if (errorMap.isEmpty()) {
-                final int id = idValueOff;
-                HttpSession session = req.getSession(true);
-                session.setAttribute(PARAM_SECTION_ID,id);
-                session.setAttribute(ATTRIBUTE_THEME_LIST_BY_SECTION_ID, unmodifiableList(themeList));
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-            }else{
-                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-            }
-
         }
-
+        // FAIL
+        req.getRequestDispatcher(PAGE_OK).forward(req, resp);
     }
 }
