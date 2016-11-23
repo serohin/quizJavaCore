@@ -53,10 +53,6 @@ public class QuestionService {
         }
         return false;
     }
-    public String getcurrentUserAnswer(){
-        return getQuestionList().get(index).getUserAnswer().getAnswer();
-
-    }
     public boolean lastQuestionInQuiz() {
         this.setIndex(++index);
         if (this.getIndex() < this.getQuestionList().size()) {
