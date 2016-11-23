@@ -15,7 +15,6 @@ public class LogoutFilter extends BaseFilter {
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
 
         HttpSession session = req.getSession(false);
-
         if (session != null) {
             session.invalidate();
             req.getRequestDispatcher(PAGE_OK).forward(req, resp);
