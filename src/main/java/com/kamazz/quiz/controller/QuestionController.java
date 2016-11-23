@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +27,7 @@ import static java.util.Collections.unmodifiableList;
 public class QuestionController extends DependencyInjectionServlet {
     public static final String PARAM_QUIZ_ID = "quizId";
     public static final String PARAM_USER_ANSWER_ID = "userAnswerId";
+    public static final String PARAM_ERROR_INPUT = "errorInput";
 
     public static final String PAGE_OK = "WEB-INF/view/question.jsp";
     public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
@@ -58,40 +58,27 @@ public class QuestionController extends DependencyInjectionServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String method = req.getMethod();
-        if (method.equalsIgnoreCase("GET")) {
-            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
-            return;
-        }
         Map<String, String> errorMapQuizId = paramValidator.validateId(req.getParameter(PARAM_QUIZ_ID));
 
         if (errorMapQuizId.isEmpty()) {
             int id = Integer.valueOf(req.getParameter(PARAM_QUIZ_ID));
-            Map<String, String> errorMapQuestionList = new HashMap<>();
-            List<Question> questionList = null;
-
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
-                    questionList = questionDao.getQuestionListByQuizId(id, conn);
+                    List<Question> questionList = questionDao.getQuestionListByQuizId(id, conn);
+                    final int index = 0;
+                    HttpSession session = req.getSession(true);
+                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
+                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
+                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 } catch (NoSuchEntityException e) {
-                    errorMapQuestionList.put("questionList", "questionList == null");
+                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                 }
                 conn.commit();
             } catch (SQLException e) {
                 //logger.debug(e);
-            }
-
-            if (errorMapQuestionList.isEmpty()) {
-                final int index = 0;
-                HttpSession session = req.getSession(true);
-                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
-                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
-            } else {
-                req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             }
         } else {
             Map<String, String> errorMapUserAnswerId = paramValidator.validate(req.getParameter(PARAM_USER_ANSWER_ID));
@@ -103,11 +90,11 @@ public class QuestionController extends DependencyInjectionServlet {
                 int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
                 questionService.setCurrentQuestionList(oldlistQuestion, oldIndex);
 
-                if(questionService.isAnswerListContainsUserAnswer(userAnswerId)){
+                if (questionService.isAnswerListContainsUserAnswer(userAnswerId)) {
                     questionService.addUserAnswerToCurrentQuestion(userAnswerId);
                     session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionService.getQuestionList()));
-                }else{
-                    req.setAttribute("errorInput", "выберите 1 из значений!");
+                } else {
+                    req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
                     req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                     return;
                 }
@@ -122,7 +109,7 @@ public class QuestionController extends DependencyInjectionServlet {
                     req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
                 }
             } else {
-                req.setAttribute("errorInput", "выберите 1 из значений!");
+                req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
                 req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 return;
             }
