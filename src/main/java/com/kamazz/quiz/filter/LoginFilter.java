@@ -47,7 +47,6 @@ public class LoginFilter extends DependencyInjectionFilter {
 
     @Override
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
-
         HttpSession session = req.getSession(false);
         Map <String,String> errorMapUserInSession = paramValidator.validate((String) session.getAttribute(PARAM_USER));
 
@@ -55,7 +54,6 @@ public class LoginFilter extends DependencyInjectionFilter {
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
             return;
         }
-
         req.setCharacterEncoding("UTF-8");
         String userName = req.getParameter(PARAM_USERNAME);
         String password = req.getParameter(PARAM_PASSWORD);
