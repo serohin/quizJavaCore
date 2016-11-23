@@ -43,7 +43,7 @@ public class QuestionService {
             }
         }
     }
-    public boolean isAnswerListContainsUserAnswer(int userAnswerId){
+    public boolean idContainsInAnswerList(int userAnswerId){
         int answerListSize = getQuestionList().get(getIndex()).getAnswerList().size();
         List<Answer> currentAnswerList = new ArrayList<>(getQuestionList().get(getIndex()).getAnswerList());
         for (int i = 0; i < answerListSize; i++) {
@@ -57,14 +57,14 @@ public class QuestionService {
         return getQuestionList().get(index).getUserAnswer().getAnswer();
 
     }
-    public boolean isLastQuestion() {
+    public boolean lastQuestionInQuiz() {
         this.setIndex(++index);
         if (this.getIndex() < this.getQuestionList().size()) {
             return false;
         }
         return true;
     }
-    public int checkCorrectUserAnswer(){
+    public int calculateCorrectUserAnswers(){
         int count = 0;
         for (int i = 0; i < getQuestionList().size(); i++) {
             if (getQuestionList().get(i).getUserAnswer().getCorrect() == (byte) 1) {

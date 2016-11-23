@@ -29,7 +29,7 @@ public class QuestionController extends DependencyInjectionServlet {
     public static final String PARAM_USER_ANSWER_ID = "userAnswerId";
     public static final String PARAM_ERROR_INPUT = "errorInput";
 
-    public static final String PAGE_OK = "WEB-INF/view/question.jsp";
+    public static final String PAGE_QUESTION = "WEB-INF/view/question.jsp";
     public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
     public static final String PAGE_QUIZ_RESULT = "WEB-INF/view/quizResult.jsp";
     public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
@@ -70,7 +70,7 @@ public class QuestionController extends DependencyInjectionServlet {
                     HttpSession session = req.getSession(true);
                     session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
                     session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                    req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                 } catch (NoSuchEntityException e) {
@@ -84,35 +84,33 @@ public class QuestionController extends DependencyInjectionServlet {
             Map<String, String> errorMapUserAnswerId = paramValidator.validate(req.getParameter(PARAM_USER_ANSWER_ID));
 
             if (errorMapUserAnswerId.isEmpty()) {
-                int userAnswerId = Integer.valueOf(req.getParameter(PARAM_USER_ANSWER_ID));
                 HttpSession session = req.getSession(true);
                 List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
                 int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
                 questionService.setCurrentQuestionList(oldlistQuestion, oldIndex);
+                int userAnswerId = Integer.valueOf(req.getParameter(PARAM_USER_ANSWER_ID));
 
-                if (questionService.isAnswerListContainsUserAnswer(userAnswerId)) {
-                    questionService.addUserAnswerToCurrentQuestion(userAnswerId);
-                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionService.getQuestionList()));
-                } else {
+                if (!questionService.idContainsInAnswerList(userAnswerId)) {
                     req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                    req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
                     return;
                 }
+                questionService.addUserAnswerToCurrentQuestion(userAnswerId);
+                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionService.getQuestionList()));
 
-                if (!questionService.isLastQuestion()) {
+                if (!questionService.lastQuestionInQuiz()) {
                     final int nextIndex = questionService.getIndex();
                     session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, nextIndex);
-                    req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+                    req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
                 } else {
-                    final int countCorrectAnswer = questionService.checkCorrectUserAnswer();
-                    session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, countCorrectAnswer);
+                    final int numberCorrectAnswers = questionService.calculateCorrectUserAnswers();
+                    session.setAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER, numberCorrectAnswers);
                     req.getRequestDispatcher(PAGE_QUIZ_RESULT).forward(req, resp);
                 }
-            } else {
-                req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
-                req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 return;
             }
+            req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
+            req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
         }
     }
 }
