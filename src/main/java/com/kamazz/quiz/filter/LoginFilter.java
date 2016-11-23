@@ -48,9 +48,9 @@ public class LoginFilter extends DependencyInjectionFilter {
     @Override
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
         HttpSession session = req.getSession(false);
-        Map <String,String> errorMapUserInSession = paramValidator.validate((String) session.getAttribute(PARAM_USER));
+        Map<String, String> errorMapUserInSession = paramValidator.validate((String) session.getAttribute(PARAM_USER));
 
-        if(errorMapUserInSession.isEmpty()){
+        if (errorMapUserInSession.isEmpty()) {
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
             return;
         }
@@ -66,7 +66,7 @@ public class LoginFilter extends DependencyInjectionFilter {
                 conn.setAutoCommit(false);
                 try {
                     newUser = userDao.getUserByName(userName, conn);
-                    if(!newUser.getPassword().equals(password)){
+                    if (!newUser.getPassword().equals(password)) {
                         errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
                     }
                 } catch (NoSuchEntityException e) {
@@ -81,10 +81,10 @@ public class LoginFilter extends DependencyInjectionFilter {
             }
         }
 
-        if (errorMapUser.isEmpty()){
+        if (errorMapUser.isEmpty()) {
             session.setAttribute(PARAM_USER, newUser.getUsername());
             resp.sendRedirect(REDIRECT_OK_URL);
-        }else{
+        } else {
             req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUser);
             req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
         }

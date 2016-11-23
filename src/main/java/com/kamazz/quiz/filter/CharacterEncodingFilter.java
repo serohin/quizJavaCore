@@ -21,6 +21,6 @@ public class CharacterEncodingFilter extends BaseFilter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         String filterParam = filterConfig.getInitParameter("encoding");
-        filterConfig.getServletContext().setAttribute("encoding",filterParam);
+        filterConfig.getServletContext().setAttribute("encoding", filterParam);
     }
 }

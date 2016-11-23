@@ -7,15 +7,6 @@ public class Answer {
     private byte correct;
     private int questionId;
 
-    public int getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
-    }
-    /*private Question question;*/
-
     public Answer() {
     }
 
@@ -33,6 +24,13 @@ public class Answer {
         this.questionId = answer.getQuestionId();
     }
 
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
+    }
 
     public int getIdAnswer() {
         return idAnswer;
@@ -57,14 +55,6 @@ public class Answer {
     public void setCorrect(byte correct) {
         this.correct = correct;
     }
-
-    /*public Question getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(Question question) {
-        this.question = question;
-    }*/
 
     @Override
     public String toString() {

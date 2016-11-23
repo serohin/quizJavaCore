@@ -3,24 +3,22 @@
 <html>
 <head>
     <title></title>
-    <%@ include file="/WEB-INF/jspf/css.jspf"%>
+    <%@ include file="/WEB-INF/jspf/css.jspf" %>
 </head>
 <body>
-
-
-<div class = "inner-wrap">
+<div class="inner-wrap">
     <div id="container">
 
-        <header class = "header">
-            <div class = "row">
+        <header class="header">
+            <div class="row">
                 <div class="leftColumnInHeader">
                     <div class="innerLeftColumnInHeader">
-                        <p class ="addPadding">JAVA CORE QUIZ</p>
+                        <p class="addPadding">JAVA CORE QUIZ</p>
                     </div>
                 </div>
                 <div class="loginForm">
                     <div class="innerLogoutInHeader">
-                        <%@ include file="/WEB-INF/jspf/User.jspf"%>
+                        <%@ include file="/WEB-INF/jspf/User.jspf" %>
                     </div>
                 </div>
             </div>
@@ -30,7 +28,7 @@
             <div class="innerWrapContent">
                 <h2>Нет такой сущности!</h2>
                 </br>
-                <form action="/section.do" method="post" >
+                <form action="/section.do" method="post">
                     <button type="submit" class="button">
                         вернуться в разделы
                     </button>
@@ -39,13 +37,12 @@
         </div>
         <footer class="footer">
             <div class="footer-bg">
-                <div class = "row">
+                <div class="row">
                     <p class="lineFooter">Учебное java приложение: Серегин О.В.</p>
                 </div>
             </div>
         </footer>
     </div>
 </div>
-
 </body>
 </html>

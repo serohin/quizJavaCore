@@ -20,6 +20,7 @@
               <property name="dataBaseName" value="jdbc/QuizDB"/>
        </bean>
 
+       <!--SERVICE-->
        <bean name="questionService" class="com.kamazz.quiz.service.QuestionService" scope="prototype"/>
 
 

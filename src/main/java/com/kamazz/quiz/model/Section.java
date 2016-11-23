@@ -7,6 +7,7 @@ public class Section {
 
     public Section() {
     }
+
     public Section(int id, String caption) {
         this.id = id;
         this.caption = caption;

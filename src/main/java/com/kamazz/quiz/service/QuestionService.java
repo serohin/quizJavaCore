@@ -6,13 +6,11 @@ import com.kamazz.quiz.model.Question;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kamazz on 15.11.16.
- */
+
 public class QuestionService {
+    List<Question> questionList;
     private int index;
     private int questionListSize;
-    List<Question> questionList;
 
     public QuestionService() {
     }
@@ -22,18 +20,20 @@ public class QuestionService {
         this.questionListSize = questionList.size();
         this.index = 0;
     }
-    public void setCurrentQuestionList(List<Question> questionList,int oldIndex) {
-        this.questionList = new ArrayList<>(questionList);
-        this.questionListSize = questionList.size();
-        this.index = oldIndex;
-    }
 
     public QuestionService(QuestionService questionService) {
         this.index = questionService.getIndex();
         this.questionListSize = questionService.getQuestionListSize();
         this.questionList = new ArrayList<>(questionService.getQuestionList());
     }
-    public void addUserAnswerToCurrentQuestion(int userAnswerId){
+
+    public void setCurrentQuestionList(List<Question> questionList, int oldIndex) {
+        this.questionList = new ArrayList<>(questionList);
+        this.questionListSize = questionList.size();
+        this.index = oldIndex;
+    }
+
+    public void addUserAnswerToCurrentQuestion(int userAnswerId) {
         int answerListSize = getQuestionList().get(getIndex()).getAnswerList().size();
         List<Answer> currentAnswerList = new ArrayList<>(getQuestionList().get(getIndex()).getAnswerList());
         for (int i = 0; i < answerListSize; i++) {
@@ -43,7 +43,8 @@ public class QuestionService {
             }
         }
     }
-    public boolean idContainsInAnswerList(int userAnswerId){
+
+    public boolean idContainsInAnswerList(int userAnswerId) {
         int answerListSize = getQuestionList().get(getIndex()).getAnswerList().size();
         List<Answer> currentAnswerList = new ArrayList<>(getQuestionList().get(getIndex()).getAnswerList());
         for (int i = 0; i < answerListSize; i++) {
@@ -53,6 +54,7 @@ public class QuestionService {
         }
         return false;
     }
+
     public boolean lastQuestionInQuiz() {
         this.setIndex(++index);
         if (this.getIndex() < this.getQuestionList().size()) {
@@ -60,7 +62,8 @@ public class QuestionService {
         }
         return true;
     }
-    public int calculateCorrectUserAnswers(){
+
+    public int calculateCorrectUserAnswers() {
         int count = 0;
         for (int i = 0; i < getQuestionList().size(); i++) {
             if (getQuestionList().get(i).getUserAnswer().getCorrect() == (byte) 1) {

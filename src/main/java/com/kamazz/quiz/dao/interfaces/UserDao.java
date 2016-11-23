@@ -8,6 +8,7 @@ import java.sql.Connection;
 
 
 public interface UserDao {
-    User getUserByName (String userName,Connection conn) throws NoSuchEntityException, DaoSystemException;
+    User getUserByName(String userName, Connection conn) throws NoSuchEntityException, DaoSystemException;
+
     User insertNewUser(User user, Connection conn) throws DaoSystemException;
 }

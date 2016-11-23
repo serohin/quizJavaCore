@@ -21,9 +21,7 @@ import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
 
-/**
- * Created by kamazz on 27.09.16.
- */
+
 public class ThemeController extends DependencyInjectionServlet {
 
     public static final String PARAM_SECTION_ID = "sectionId";

@@ -29,7 +29,7 @@ public class JNDIDatasource {
     }
 
     public DataSource getDataSource() {
-        if(null == dataSource){
+        if (null == dataSource) {
             setDataSource();
         }
         return dataSource;
@@ -40,7 +40,7 @@ public class JNDIDatasource {
             InitialContext initCtx = new InitialContext();
             Context envCont = (Context) initCtx.lookup(getDatasourceContext());
             this.dataSource = (DataSource) envCont.lookup(getDataBaseName());
-        } catch (NamingException | NullPointerException  e) {
+        } catch (NamingException | NullPointerException e) {
             //log("Cannot get datasource" +e )
         }
     }
@@ -64,8 +64,6 @@ public class JNDIDatasource {
         conn = ds.getConnection();
         return conn;
     }*/
-
-
 
 
 }

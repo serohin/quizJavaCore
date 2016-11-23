@@ -9,6 +9,6 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface QuizDao {
-    List<Quiz> getQuizListByThemeId (int themeId,Connection conn ) throws NoSuchEntityException,DaoSystemException;
+    List<Quiz> getQuizListByThemeId(int themeId, Connection conn) throws NoSuchEntityException, DaoSystemException;
 
 }

@@ -6,7 +6,6 @@
     <%@ include file="/WEB-INF/jspf/css.jspf"%>
 </head>
 <body>
-
 <div class = "inner-wrap">
     <div id="container">
 
@@ -24,7 +23,6 @@
             <div class="innerWrapContent">
 
                 <form action="/question.do" method="post">
-
                     <h2><b><c:out value="${quizIndex+1}"/></b>. Вопрос номер <b><c:out value="${quizIndex+1}"/></b> из <b><c:out value="${question.size()}"/></b>:</h2>
                     <a class="button buttonBackInQuestionForm" href="./endquiz.do">« выйти в квизы</a>
                     <p>${question[quizIndex].caption}</p>
@@ -47,8 +45,6 @@
                         <input class="button buttonQuestionForm" type="submit" value="cледующий »"/>
                     </p>
                 </form>
-
-
                 </p>
             </div>
         </div>

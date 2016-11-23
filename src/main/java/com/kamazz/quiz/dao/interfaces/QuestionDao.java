@@ -8,6 +8,6 @@ import com.kamazz.quiz.model.Question;
 import java.sql.Connection;
 import java.util.List;
 
-public interface QuestionDao{
-        List<Question> getQuestionListByQuizId(int quizId,Connection conn) throws DaoSystemException, NoSuchEntityException;
+public interface QuestionDao {
+    List<Question> getQuestionListByQuizId(int quizId, Connection conn) throws DaoSystemException, NoSuchEntityException;
 }

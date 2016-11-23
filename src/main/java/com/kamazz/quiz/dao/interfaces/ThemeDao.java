@@ -8,6 +8,8 @@ import com.kamazz.quiz.model.Theme;
 import java.sql.Connection;
 import java.util.List;
 
-public interface ThemeDao  {
-    List<Theme> getThemesBySectionId(int sectionId, Connection conn) throws DaoSystemException, NoSuchEntityException;;
+public interface ThemeDao {
+    List<Theme> getThemesBySectionId(int sectionId, Connection conn) throws DaoSystemException, NoSuchEntityException;
+
+    ;
 }

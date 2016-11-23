@@ -49,8 +49,8 @@
                                                 <c:choose>
                                                     <c:when test="${answer.correct == '1'}">
                                                         </br><input type="checkbox" name="userAnswerId" value="" checked disabled>
-                                                            <c:out value="${answer.answer}"/><b style="color:green"> ✔ </b>
-                                                                <span class="pointerCorrectAnswer">ответ пользователя - правильный ответ</span>
+                                                        <c:out value="${answer.answer}"/><b style="color:green"> ✔ </b>
+                                                        <span class="pointerCorrectAnswer">ответ пользователя - правильный ответ</span>
                                                     </c:when>
                                                     <c:otherwise>
                                                         </br><input type="checkbox" name="userAnswerId" value="" disabled>
@@ -73,7 +73,8 @@
                                                     <c:when test="${answer.correct == '1'}">
                                                         </br><input type="checkbox" name="userAnswerId" value="" disabled>
                                                         <c:out value="${answer.answer}"/><b style="color:green">
-                                                        ✓ </b><span class="pointerCorrectAnswer"> правильный ответ</span>
+                                                        ✓ </b><span
+                                                            class="pointerCorrectAnswer"> правильный ответ</span>
                                                     </c:when>
 
                                                     <c:otherwise>

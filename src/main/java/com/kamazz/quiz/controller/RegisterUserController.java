@@ -19,9 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-/**
- * Created by kamazz on 13.10.16.
- */
+
 public class RegisterUserController extends DependencyInjectionServlet {
 
     public static final String PARAM_USER = "user";
