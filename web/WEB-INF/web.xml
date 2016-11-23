@@ -3,8 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-
-
     <resource-ref>
         <res-ref-name>jdbc/QuizDB</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
@@ -117,16 +115,16 @@
         <location>/WEB-INF/view/404error.jsp</location>
     </error-page>
     <error-page>
-    <!--<exception-type>javax.servlet.ServletException</exception-type>-->
-      <error-code>500</error-code>
-      <location>/WEB-INF/view/ServletException.jsp</location>
-  </error-page>
+        <!--<exception-type>javax.servlet.ServletException</exception-type>-->
+        <error-code>500</error-code>
+        <location>/WEB-INF/view/ServletException.jsp</location>
+    </error-page>
     <error-page>
         <exception-type>com.kamazz.quiz.dao.exception.NoSuchEntityException</exception-type>
         <location>/WEB-INF/view/NoSuchEntityException.jsp</location>
     </error-page>
-<welcome-file-list>
-    <welcome-file>/WEB-INF/view/index.jsp</welcome-file>
-</welcome-file-list>
+    <welcome-file-list>
+        <welcome-file>/WEB-INF/view/index.jsp</welcome-file>
+    </welcome-file-list>
 
 </web-app>
