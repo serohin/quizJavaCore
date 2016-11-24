@@ -20,7 +20,7 @@
         </header>
         <div class="content row">
             <div class="innerWrapContent">
-                <h2>ServletExcsption</h2>
+                <h2>ServletException</h2>
                 </br>
                 <form action="/section.do" method="post">
                     <button type="submit" class="button">
