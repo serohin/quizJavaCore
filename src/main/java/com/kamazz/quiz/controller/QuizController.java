@@ -25,11 +25,9 @@ import static java.util.Collections.unmodifiableList;
 public class QuizController extends DependencyInjectionServlet {
 
     public static final String PARAM_THEME_ID = "themeId";
-    public static final String ATTRIBUTE_QUIZ_LIST_BY_THEME_ID = "quizListByThemeId";
+    public static final String ATTRIBUTE_MODEL_TO_VIEW = "quizListByThemeId";
     public static final String ATTRIBUTE_CURRENT_THEME_ID = "currentThemeId";
 
-    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
-    public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
     public static final String PAGE_OK = "WEB-INF/view/quiz.jsp";
 
     @Inject("quizDaoImpl")
@@ -43,7 +41,7 @@ public class QuizController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+        req.getRequestDispatcher(SectionController.PAGE_ERROR).forward(req, resp);
     }
 
     @Override
@@ -59,11 +57,10 @@ public class QuizController extends DependencyInjectionServlet {
                     List<Quiz> quizList = quizDao.getQuizListByThemeId(themeId, conn);
                     HttpSession session = req.getSession(true);
                     session.setAttribute(ATTRIBUTE_CURRENT_THEME_ID, themeId);
-                    session.setAttribute(ATTRIBUTE_QUIZ_LIST_BY_THEME_ID, unmodifiableList(quizList));
+                    session.setAttribute(ATTRIBUTE_MODEL_TO_VIEW, unmodifiableList(quizList));
                     // OK
                     req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (NoSuchEntityException e) {
-                    //req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                     //logger.debug(e);
                 } catch (DaoSystemException e) {
                     conn.rollback();
@@ -72,11 +69,10 @@ public class QuizController extends DependencyInjectionServlet {
                 conn.commit();
                 return;
             } catch (SQLException e) {
-                e.printStackTrace();//убрать
                 //logger.debug(e);
             }
         }
         // FAIL
-        req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
+        req.getRequestDispatcher(SectionController.PAGE_ERROR).forward(req, resp);
     }
 }

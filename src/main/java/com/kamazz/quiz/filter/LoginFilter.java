@@ -23,14 +23,14 @@ import java.util.Map;
 
 public class LoginFilter extends DependencyInjectionFilter {
 
-    public static final String PAGE_LOGIN = "WEB-INF/view/index.jsp";
+    public static final String PAGE_ERROR = "WEB-INF/view/index.jsp";
+
     public static final String PARAM_USER = "user";
     public static final String PARAM_USERNAME = "userName";
     public static final String PARAM_PASSWORD = "password";
 
     public static final String ATTRIBUTE_ERROR_MAP = "errorMap";
     public static final String KEY_ERROR_MAP_NO_ENTITY = "noEntity";
-
     public static final String REDIRECT_OK_URL = "./section.do";
 
     @Inject("userDaoImpl")
@@ -51,7 +51,7 @@ public class LoginFilter extends DependencyInjectionFilter {
         Map<String, String> errorMapUserInSession = paramValidator.validate((String) session.getAttribute(PARAM_USER));
 
         if (errorMapUserInSession.isEmpty()) {
-            req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
+            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
             return;
         }
         req.setCharacterEncoding("UTF-8");
@@ -71,12 +71,13 @@ public class LoginFilter extends DependencyInjectionFilter {
                     }
                 } catch (NoSuchEntityException e) {
                     errorMapUser.put(KEY_ERROR_MAP_NO_ENTITY, "нет такого пользователя");
+                    //logger.debug(e);
                 } catch (DaoSystemException e) {
                     conn.rollback();
+                    //logger.debug(e);
                 }
                 conn.commit();
             } catch (SQLException e) {
-                e.printStackTrace();//убрать
                 //logger.debug(e);
             }
         }
@@ -86,7 +87,7 @@ public class LoginFilter extends DependencyInjectionFilter {
             resp.sendRedirect(REDIRECT_OK_URL);
         } else {
             req.setAttribute(ATTRIBUTE_ERROR_MAP, errorMapUser);
-            req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
+            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
         }
     }
 }

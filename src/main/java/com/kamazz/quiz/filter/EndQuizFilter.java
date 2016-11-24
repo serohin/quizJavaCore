@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class EndQuizFilter extends BaseFilter {
     public static final String PAGE_OK = "WEB-INF/view/quiz.jsp";
-    public static final String ATTRIBUTE_CURRENT_QUESTION_LIST = "question";
+    public static final String ATTRIBUTE_MODEL_TO_VIEW = "question";
     public static final String ATTRIBUTE_CURRENT_QUESTION_INDEX = "quizIndex";
     public static final String ATTRIBUTE_COUNT_CORRECT_ANSWER = "countCorrectAnswer";
 
@@ -19,7 +19,7 @@ public class EndQuizFilter extends BaseFilter {
 
         //remove some session attributes
         HttpSession session = req.getSession(true);
-        session.removeAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST);
+        session.removeAttribute(ATTRIBUTE_MODEL_TO_VIEW);
         session.removeAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
         session.removeAttribute(ATTRIBUTE_COUNT_CORRECT_ANSWER);
 

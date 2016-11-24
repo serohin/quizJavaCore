@@ -25,11 +25,10 @@ import static java.util.Collections.unmodifiableList;
 public class ThemeController extends DependencyInjectionServlet {
 
     public static final String PARAM_SECTION_ID = "sectionId";
-    public static final String ATTRIBUTE_THEME_LIST_BY_SECTION_ID = "themeListBySectionId";
+    public static final String ATTRIBUTE_MODEL_TO_VIEW = "themeListBySectionId";
 
-    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
-    public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";//delete???
     public static final String PAGE_OK = "WEB-INF/view/theme.jsp";
+    public static final String PAGE_ERROR = "WEB-INF/view/theme.jsp";
 
     @Inject("themeDaoImpl")
     ThemeDao themeDao;
@@ -42,7 +41,7 @@ public class ThemeController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+        req.getRequestDispatcher(SectionController.PAGE_ERROR).forward(req, resp);
     }
 
     @Override
@@ -58,24 +57,22 @@ public class ThemeController extends DependencyInjectionServlet {
                     List<Theme> themeList = themeDao.getThemesBySectionId(id, conn);
                     HttpSession session = req.getSession(true);
                     session.setAttribute(PARAM_SECTION_ID,id);
-                    session.setAttribute(ATTRIBUTE_THEME_LIST_BY_SECTION_ID, unmodifiableList(themeList));
+                    session.setAttribute(ATTRIBUTE_MODEL_TO_VIEW, unmodifiableList(themeList));
                     // OK
                     req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
                     //logger.debug(e);
                 } catch (NoSuchEntityException e) {
-                    //req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                     //logger.debug(e);
                 }
                 conn.commit();
                 return;
             } catch (SQLException e) {
-                e.printStackTrace();
                 //logger.debug(e);
             }
         }
         // FAIL
-        req.getRequestDispatcher(PAGE_OK).forward(req, resp);
+        req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
     }
 }

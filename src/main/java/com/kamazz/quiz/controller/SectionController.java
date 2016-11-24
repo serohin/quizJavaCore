@@ -20,10 +20,10 @@ import static java.util.Collections.unmodifiableList;
 
 
 public class SectionController extends DependencyInjectionServlet {
-    public static final String ATTRIBUTE_SECTION_LIST = "sectionList";
+    public static final String ATTRIBUTE_MODEL_TO_VIEW = "sectionList";
 
     public static final String PAGE_OK = "WEB-INF/view/section.jsp";
-    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
+    public static final String PAGE_ERROR = "WEB-INF/view/getResponseError.jsp";
 
     @Inject("jndiDatasource")
     JNDIDatasource jndiDatasource;
@@ -34,17 +34,18 @@ public class SectionController extends DependencyInjectionServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
-        List<Section> sectionList = (List<Section>) session.getAttribute(ATTRIBUTE_SECTION_LIST);
+        List<Section> sectionList = (List<Section>) session.getAttribute(ATTRIBUTE_MODEL_TO_VIEW);
         if (sectionList == null) {
             try (Connection conn = jndiDatasource.getDataSource().getConnection()) {
                 conn.setAutoCommit(false);
                 try {
                     List<Section> allSectionList = sectionDao.getAllSection(conn);
-                    session.setAttribute(ATTRIBUTE_SECTION_LIST, unmodifiableList(allSectionList));
+                    session.setAttribute(ATTRIBUTE_MODEL_TO_VIEW, unmodifiableList(allSectionList));
                     // OK
                     req.getRequestDispatcher(PAGE_OK).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
+                    //logger.debug(e);
                 }
                 conn.commit();
                 return;
@@ -53,7 +54,7 @@ public class SectionController extends DependencyInjectionServlet {
             }
         }
         // FAIL
-        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+        req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
 
     }
 

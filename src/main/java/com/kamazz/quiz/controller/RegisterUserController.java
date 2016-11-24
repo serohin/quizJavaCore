@@ -6,6 +6,7 @@ import com.kamazz.quiz.dao.datasource.JNDIDatasource;
 import com.kamazz.quiz.dao.exception.DaoSystemException;
 import com.kamazz.quiz.dao.exception.NoSuchEntityException;
 import com.kamazz.quiz.dao.interfaces.UserDao;
+import com.kamazz.quiz.filter.LoginFilter;
 import com.kamazz.quiz.model.User;
 import com.kamazz.quiz.validator.RequestParameterValidator;
 import com.kamazz.quiz.validator.UserValidator;
@@ -20,14 +21,10 @@ import java.sql.SQLException;
 import java.util.Map;
 
 
+
+
 public class RegisterUserController extends DependencyInjectionServlet {
-
-    public static final String PARAM_USER = "user";
-    public static final String PARAM_USERNAME = "userName";
-    public static final String PARAM_PASSWORD = "password";
     public static final String PARAM_INVITE = "invite";
-
-
     public static final String ATTRIBUTE_ERROR_MAP = "errorMap";
     public static final String ATTRIBUTE_INPUT_USERNAME_VALUE = "InputUserNameValue";
     public static final String ATTRIBUTE_INPUT_PASSWORD_VALUE = "InputPasswordValue";
@@ -37,7 +34,6 @@ public class RegisterUserController extends DependencyInjectionServlet {
     public static final String KEY_ERROR_MAP_USERNAME = "userName";
 
     public static final String PAGE_MORE_INFO = "WEB-INF/view/registerUser.jsp";
-    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
     public static final String REDIRECT_OK_URL = "./section.do";
 
 
@@ -55,13 +51,13 @@ public class RegisterUserController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+        req.getRequestDispatcher(SectionController.PAGE_ERROR).forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userName = req.getParameter(PARAM_USERNAME);
-        String password = req.getParameter(PARAM_PASSWORD);
+        String userName = req.getParameter(LoginFilter.PARAM_USERNAME);
+        String password = req.getParameter(LoginFilter.PARAM_PASSWORD);
         final User userRegister = new User(userName, password);
         Map<String, String> errorMapUserRegister = userValidator.validate(userRegister);
 
@@ -86,11 +82,12 @@ public class RegisterUserController extends DependencyInjectionServlet {
                     if (errorMapUserRegister.isEmpty()) {
                         User newUser = userDao.insertNewUser(userRegister, conn);
                         HttpSession session = req.getSession(true);
-                        session.setAttribute(PARAM_USER, newUser.getUsername());
+                        session.setAttribute(LoginFilter.PARAM_USER, newUser.getUsername());
                         resp.sendRedirect(REDIRECT_OK_URL);
                     }
                 } catch (DaoSystemException e) {
                     conn.rollback();
+                    //logger.debug(e);
                 }
                 conn.commit();
                 return;

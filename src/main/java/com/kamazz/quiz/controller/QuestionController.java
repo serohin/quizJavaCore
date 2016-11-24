@@ -30,11 +30,10 @@ public class QuestionController extends DependencyInjectionServlet {
     public static final String PARAM_ERROR_INPUT = "errorInput";
 
     public static final String PAGE_QUESTION = "WEB-INF/view/question.jsp";
-    public static final String PAGE_ERROR = "WEB-INF/view/404error.jsp";
+    public static final String PAGE_ERROR = "WEB-INF/view/question.jsp";
     public static final String PAGE_QUIZ_RESULT = "WEB-INF/view/quizResult.jsp";
-    public static final String PAGE_GET_ERROR = "WEB-INF/view/getResponseError.jsp";
 
-    public static final String ATTRIBUTE_CURRENT_QUESTION_LIST = "question";
+    public static final String ATTRIBUTE_MODEL_TO_VIEW = "question";
     public static final String ATTRIBUTE_CURRENT_QUESTION_INDEX = "quizIndex";
     public static final String ATTRIBUTE_COUNT_CORRECT_ANSWER = "countCorrectAnswer";
 
@@ -53,7 +52,7 @@ public class QuestionController extends DependencyInjectionServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(PAGE_GET_ERROR).forward(req, resp);
+        req.getRequestDispatcher(SectionController.PAGE_ERROR).forward(req, resp);
     }
 
     @Override
@@ -68,13 +67,14 @@ public class QuestionController extends DependencyInjectionServlet {
                     List<Question> questionList = questionDao.getQuestionListByQuizId(id, conn);
                     final int index = 0;
                     HttpSession session = req.getSession(true);
-                    session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionList));
+                    session.setAttribute(ATTRIBUTE_MODEL_TO_VIEW, unmodifiableList(questionList));
                     session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX, index);
                     req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
                 } catch (DaoSystemException e) {
                     conn.rollback();
+                    //logger.debug(e);
                 } catch (NoSuchEntityException e) {
-                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
+                    //logger.debug(e);
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -85,18 +85,18 @@ public class QuestionController extends DependencyInjectionServlet {
 
             if (errorMapUserAnswerId.isEmpty()) {
                 HttpSession session = req.getSession(true);
-                List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST));
+                List<Question> oldlistQuestion = new ArrayList((List<Question>) session.getAttribute(ATTRIBUTE_MODEL_TO_VIEW));
                 int oldIndex = (int) session.getAttribute(ATTRIBUTE_CURRENT_QUESTION_INDEX);
                 questionService.setCurrentQuestionList(oldlistQuestion, oldIndex);
                 int userAnswerId = Integer.valueOf(req.getParameter(PARAM_USER_ANSWER_ID));
 
                 if (!questionService.idContainsInAnswerList(userAnswerId)) {
                     req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
-                    req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
+                    req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
                     return;
                 }
                 questionService.addUserAnswerToCurrentQuestion(userAnswerId);
-                session.setAttribute(ATTRIBUTE_CURRENT_QUESTION_LIST, unmodifiableList(questionService.getQuestionList()));
+                session.setAttribute(ATTRIBUTE_MODEL_TO_VIEW, unmodifiableList(questionService.getQuestionList()));
 
                 if (!questionService.lastQuestionInQuiz()) {
                     final int nextIndex = questionService.getIndex();
@@ -110,7 +110,7 @@ public class QuestionController extends DependencyInjectionServlet {
                 return;
             }
             req.setAttribute(PARAM_ERROR_INPUT, "выберите 1 из значений!");
-            req.getRequestDispatcher(PAGE_QUESTION).forward(req, resp);
+            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
         }
     }
 }

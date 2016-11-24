@@ -6,15 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.kamazz.quiz.filter.LoginFilter.PARAM_USER;
+
 
 public class MainSecurituFilter extends BaseFilter {
-    public static final String PAGE_LOGIN = "WEB-INF/view/index.jsp";
-    public static final String PARAM_USER = "user";//???
+    public static final String PAGE_ERROR = "WEB-INF/view/index.jsp";
 
     @Override
     public void doHttpFilter(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) throws IOException, ServletException {
-
-
         if (req.getRequestURI().contains("login.do") || req.getRequestURI().contains("registerNewUser.do")) {
             filterChain.doFilter(req, resp);
             return;
@@ -23,7 +22,7 @@ public class MainSecurituFilter extends BaseFilter {
         if (req.getSession() != null && req.getSession().getAttribute(PARAM_USER) != null) {
             filterChain.doFilter(req, resp);
         } else {
-            req.getRequestDispatcher(PAGE_LOGIN).forward(req, resp);
+            req.getRequestDispatcher(PAGE_ERROR).forward(req, resp);
 
         }
     }
